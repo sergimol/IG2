@@ -19,6 +19,8 @@ protected:
   virtual void shutdown();
   virtual void setupScene();
 
+  void setupHours();
+
   virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);  // InputListener
       
   Ogre::SceneManager* mSM = nullptr;
@@ -27,9 +29,11 @@ protected:
   Ogre::SceneNode* mCamNode = nullptr;
   Ogre::SceneNode* mSinbadNode = nullptr;
   OgreBites::CameraMan* mCamMgr = nullptr;
-  Ogre::SceneNode* mColumnsNode = nullptr;
+ /* Ogre::SceneNode* mColumnsNode = nullptr;
   Ogre::SceneNode* mLowerNode = nullptr;
-  Ogre::SceneNode* mUpperNode = nullptr;
+  Ogre::SceneNode* mUpperNode = nullptr;*/
+  Ogre::SceneNode* mClockNode = nullptr;
+  Ogre::SceneNode* mHourNode[12];
 };
 
 #endif

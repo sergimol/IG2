@@ -66,7 +66,7 @@ void IG2App::setupScene(void)
 
   mCamNode->setPosition(0, 0, 1000);
   mCamNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
-  mCamNode->setDirection(Ogre::Vector3((0.7, 0.8, 0.9)));  
+  mCamNode->setDirection(Ogre::Vector3((0, 0, 0.0)));  
   
   // and tell it to render into the main window
   Viewport* vp = getRenderWindow()->addViewport(cam);
@@ -90,7 +90,8 @@ void IG2App::setupScene(void)
   //------------------------------------------------------------------------
 
   // finally something to render
-
+  mClockNode = mSM->getRootSceneNode()->createChildSceneNode("Clock");
+  setupHours();
   Ogre::Entity* ent = mSM->createEntity("Sinbad.mesh");
 
   mSinbadNode = mSM->getRootSceneNode()->createChildSceneNode("nSinbad");
@@ -98,7 +99,7 @@ void IG2App::setupScene(void)
 
   mSinbadNode->setPosition(0, 20, 0);
   mSinbadNode->setScale(20, 20, 20);
-  mSinbadNode->yaw(Ogre::Degree(180));
+  /*mSinbadNode->yaw(Ogre::Degree(180));*/
   //mSinbadNode->showBoundingBox(true);
   //mSinbadNode->setVisible(false);
 
@@ -108,19 +109,19 @@ void IG2App::setupScene(void)
   mHelmetNode->attachObject(ent);
   mHelmetNode->setScale(50, 50, 50);*/
 
-  ent = mSM->createEntity("Columns.mesh");
-  mColumnsNode = mSM->getRootSceneNode()->createChildSceneNode("nColumns");
-  mColumnsNode->attachObject(ent);
-  //mColumnsNode->setScale(50, 50, 50);
-  
-  ent = mSM->createEntity("RomanBathLower.mesh");
-  mLowerNode = mSM->getRootSceneNode()->createChildSceneNode("nLower");
-  mLowerNode->attachObject(ent);
-  //mLowerNode->setScale(50, 50, 50);
-  
-  ent = mSM->createEntity("RomanBathUpper.mesh");
-  mUpperNode = mSM->getRootSceneNode()->createChildSceneNode("nUpper");
-  mUpperNode->attachObject(ent);
+  //ent = mSM->createEntity("Columns.mesh");
+  //mColumnsNode = mSM->getRootSceneNode()->createChildSceneNode("nColumns");
+  //mColumnsNode->attachObject(ent);
+  ////mColumnsNode->setScale(50, 50, 50);
+  //
+  //ent = mSM->createEntity("RomanBathLower.mesh");
+  //mLowerNode = mSM->getRootSceneNode()->createChildSceneNode("nLower");
+  //mLowerNode->attachObject(ent);
+  ////mLowerNode->setScale(50, 50, 50);
+  //
+  //ent = mSM->createEntity("RomanBathUpper.mesh");
+  //mUpperNode = mSM->getRootSceneNode()->createChildSceneNode("nUpper");
+  //mUpperNode->attachObject(ent);
   //mLowerNode->setScale(50, 50, 50);
   //------------------------------------------------------------------------
 
@@ -135,3 +136,14 @@ void IG2App::setupScene(void)
 
 }
 
+void IG2App::setupHours() {
+	Ogre::Entity* ent;
+
+	for (int i = 0; i < 12; ++i) {
+		ent = mSM->createEntity("sphere.mesh");
+		mHourNode[i] = mClockNode->createChildSceneNode("Hora " + std::to_string(i));
+		mHourNode[i]->attachObject(ent);
+
+		mHourNode[i]->setPosition(Ogre::Math::Sin(Ogre::Math::DegreesToRadians(30 * i)) * 1000, Ogre::Math::Cos(Ogre::Math::DegreesToRadians(30 * i)) * 1000, 0);
+	}
+}
