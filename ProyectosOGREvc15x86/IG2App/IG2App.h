@@ -33,6 +33,10 @@ protected:
   Ogre::SceneNode* mLowerNode = nullptr;
   Ogre::SceneNode* mUpperNode = nullptr;*/
   Ogre::SceneNode* mClockNode = nullptr;
+  Ogre::SceneNode* mHoursHandNode = nullptr;
+  Ogre::SceneNode* mMinutesHandNode = nullptr;
+  Ogre::SceneNode* mSecondsHandNode = nullptr;
+  Ogre::SceneNode* mSpheresNode = nullptr;
   Ogre::SceneNode* mHourNode[12];
 };
 

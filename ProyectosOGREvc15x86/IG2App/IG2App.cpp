@@ -9,10 +9,14 @@ using namespace Ogre;
 
 bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
 {
-  if (evt.keysym.sym == SDLK_ESCAPE)
-  {
-    getRoot()->queueEndRendering();
-  }
+	if (evt.keysym.sym == SDLK_ESCAPE)
+	{
+		getRoot()->queueEndRendering();
+	}
+	else if (evt.keysym.sym == SDLK_g && mClockNode != nullptr)
+		mClockNode->roll(Ogre::Degree(-1));
+	else if (evt.keysym.sym == SDLK_h && mSpheresNode != nullptr) 
+		mSpheresNode->roll(Ogre::Degree(-1));		
   //else if (evt.keysym.sym == SDLK_???)
   
   return true;
@@ -70,7 +74,7 @@ void IG2App::setupScene(void)
   
   // and tell it to render into the main window
   Viewport* vp = getRenderWindow()->addViewport(cam);
-  vp->setBackgroundColour(Ogre::ColourValue(1, 1, 1));
+  vp->setBackgroundColour(Ogre::ColourValue(0.7, 0.8, 0.9));
 
   //------------------------------------------------------------------------
 
@@ -84,7 +88,7 @@ void IG2App::setupScene(void)
   //mLightNode = mCamNode->createChildSceneNode("nLuz");
   mLightNode->attachObject(luz);
 
-  mLightNode->setDirection(Ogre::Vector3(1, 0, 0));  //vec3.normalise();
+  mLightNode->setDirection(Ogre::Vector3(0, 0, -1));  //vec3.normalise();
   //lightNode->setPosition(0, 0, 1000);
  
   //------------------------------------------------------------------------
@@ -92,13 +96,13 @@ void IG2App::setupScene(void)
   // finally something to render
   mClockNode = mSM->getRootSceneNode()->createChildSceneNode("Clock");
   setupHours();
-  Ogre::Entity* ent = mSM->createEntity("Sinbad.mesh");
+  //Ogre::Entity* ent = mSM->createEntity("Sinbad.mesh");
 
-  mSinbadNode = mSM->getRootSceneNode()->createChildSceneNode("nSinbad");
+  /*mSinbadNode = mSM->getRootSceneNode()->createChildSceneNode("nSinbad");
   mSinbadNode->attachObject(ent);
 
   mSinbadNode->setPosition(0, 20, 0);
-  mSinbadNode->setScale(20, 20, 20);
+  mSinbadNode->setScale(20, 20, 20);*/
   /*mSinbadNode->yaw(Ogre::Degree(180));*/
   //mSinbadNode->showBoundingBox(true);
   //mSinbadNode->setVisible(false);
@@ -128,7 +132,6 @@ void IG2App::setupScene(void)
   mCamMgr = new OgreBites::CameraMan(mCamNode);
   addInputListener(mCamMgr);
   mCamMgr->setStyle(OgreBites::CS_ORBIT);  
-  
   //mCamMgr->setTarget(mSinbadNode);  
   //mCamMgr->setYawPitchDist(Radian(0), Degree(30), 100);
 
@@ -138,12 +141,35 @@ void IG2App::setupScene(void)
 
 void IG2App::setupHours() {
 	Ogre::Entity* ent;
-
+	mSpheresNode = mClockNode->createChildSceneNode("Esferas");
 	for (int i = 0; i < 12; ++i) {
 		ent = mSM->createEntity("sphere.mesh");
-		mHourNode[i] = mClockNode->createChildSceneNode("Hora " + std::to_string(i));
+		mHourNode[i] = mSpheresNode->createChildSceneNode("Hora " + std::to_string(i));
 		mHourNode[i]->attachObject(ent);
 
-		mHourNode[i]->setPosition(Ogre::Math::Sin(Ogre::Math::DegreesToRadians(30 * i)) * 1000, Ogre::Math::Cos(Ogre::Math::DegreesToRadians(30 * i)) * 1000, 0);
+		mHourNode[i]->setPosition(Ogre::Math::Sin(Ogre::Math::DegreesToRadians(30 * i)) * 750, Ogre::Math::Cos(Ogre::Math::DegreesToRadians(30 * i)) * 750, 0);
+
+		if (i % 2 == 0) 
+			mSM->getSceneNode("Hora " + std::to_string(i))->setScale(0.5, 0.5, 0.5);
 	}
+
+	ent = mSM->createEntity("cube.mesh");
+	mHoursHandNode = mClockNode->createChildSceneNode("Aguja horas");
+	mHoursHandNode->attachObject(ent);
+	mSM->getSceneNode("Aguja horas")->setScale(0.35, 4, 0.1);
+	mSM->getSceneNode("Aguja horas")->setPosition(0, 200, 0);
+
+	ent = mSM->createEntity("cube.mesh");
+	mHoursHandNode = mClockNode->createChildSceneNode("Aguja minutos");
+	mHoursHandNode->attachObject(ent);
+	mSM->getSceneNode("Aguja minutos")->setScale(0.25, 6, 0.1);
+	mSM->getSceneNode("Aguja minutos")->roll(Ogre::Degree(-90));
+	mSM->getSceneNode("Aguja minutos")->setPosition(250, 0, 0);
+
+	ent = mSM->createEntity("cube.mesh");
+	mHoursHandNode = mClockNode->createChildSceneNode("Aguja segundos");
+	mHoursHandNode->attachObject(ent);
+	mSM->getSceneNode("Aguja segundos")->setScale(0.1, 6.5, 0.1);
+	mSM->getSceneNode("Aguja segundos")->roll(Ogre::Degree(-240));
+	mSM->getSceneNode("Aguja segundos")->setPosition(-250, -150, 0);
 }
