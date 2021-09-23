@@ -31,7 +31,7 @@ void IG2App::shutdown()
 
   delete mTrayMgr;  mTrayMgr = nullptr;
   delete mCamMgr; mCamMgr = nullptr;
-  
+  delete aspa; aspa = nullptr;
   // do not forget to call the base 
   IG2ApplicationContext::shutdown();
 }
@@ -94,39 +94,12 @@ void IG2App::setupScene(void)
   //------------------------------------------------------------------------
 
   // finally something to render
-  mClockNode = mSM->getRootSceneNode()->createChildSceneNode("Clock");
-  setupHours();
+ /* mClockNode = mSM->getRootSceneNode()->createChildSceneNode("Clock");
+  setupHours();*/
   //Ogre::Entity* ent = mSM->createEntity("Sinbad.mesh");
 
-  /*mSinbadNode = mSM->getRootSceneNode()->createChildSceneNode("nSinbad");
-  mSinbadNode->attachObject(ent);
-
-  mSinbadNode->setPosition(0, 20, 0);
-  mSinbadNode->setScale(20, 20, 20);*/
-  /*mSinbadNode->yaw(Ogre::Degree(180));*/
-  //mSinbadNode->showBoundingBox(true);
-  //mSinbadNode->setVisible(false);
-
-  
-  /*ent = mSM->createEntity("DamagedHelmet.mesh");
-  mHelmetNode = mSM->getRootSceneNode()->createChildSceneNode("nHelmet");
-  mHelmetNode->attachObject(ent);
-  mHelmetNode->setScale(50, 50, 50);*/
-
-  //ent = mSM->createEntity("Columns.mesh");
-  //mColumnsNode = mSM->getRootSceneNode()->createChildSceneNode("nColumns");
-  //mColumnsNode->attachObject(ent);
-  ////mColumnsNode->setScale(50, 50, 50);
-  //
-  //ent = mSM->createEntity("RomanBathLower.mesh");
-  //mLowerNode = mSM->getRootSceneNode()->createChildSceneNode("nLower");
-  //mLowerNode->attachObject(ent);
-  ////mLowerNode->setScale(50, 50, 50);
-  //
-  //ent = mSM->createEntity("RomanBathUpper.mesh");
-  //mUpperNode = mSM->getRootSceneNode()->createChildSceneNode("nUpper");
-  //mUpperNode->attachObject(ent);
-  //mLowerNode->setScale(50, 50, 50);
+  nodoAspa = mSM->getRootSceneNode()->createChildSceneNode("Aspa");
+  aspa = new Aspa(nodoAspa);
   //------------------------------------------------------------------------
 
   mCamMgr = new OgreBites::CameraMan(mCamNode);
