@@ -45,6 +45,9 @@ bool AspasMolino::keyPressed(const OgreBites::KeyboardEvent& evt)
 	{
 		aspasNode->roll(Ogre::Degree(-1));
 	}
+	else if (evt.keysym.sym == SDLK_c) {
+		cilindroCentralNode->translate(0, 0, -1);
+	}
 	return true;
 }
 
@@ -62,16 +65,20 @@ Molino::Molino(SceneNode* node, int n) : Obj(node)
 	techoNode->scale(0.75, 0.75, 0.75);
 
 	aspasNode = mNode->createChildSceneNode("Aspas Molino");
-	AspasMolino* aux = new AspasMolino(aspasNode, n);
+	aspas = new AspasMolino(aspasNode, n);
 	aspasNode->scale(0.3, 0.3, 0.3);
 	aspasNode->translate(0, 0, 80);
 }
 
 bool Molino::keyPressed(const OgreBites::KeyboardEvent& evt)
-{
-	if (evt.keysym.sym == SDLK_g)
-	{
-		aspasNode->roll(Ogre::Degree(-1));
+{	
+	if (evt.keysym.sym == SDLK_h) {
+		aspasNode->translate(0, 0, -80, SceneNode::TS_LOCAL);
+		aspasNode->yaw(Degree(1));
+		aspasNode->translate(0, 0, 80, SceneNode::TS_LOCAL);
 	}
+	else
+		aspas->keyPressed(evt);
+
 	return true;
 }

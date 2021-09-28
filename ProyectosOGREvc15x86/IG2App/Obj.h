@@ -34,13 +34,12 @@ class AspasMolino : public Obj {
 public:
 	AspasMolino(SceneNode* node, int n);
 	~AspasMolino() {};
+	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
 protected:
 	SceneNode* cilindroCentralNode = nullptr;
 	int numAspas;
 	SceneNode* aspasNode = nullptr;
 	std::vector<SceneNode*> arrayAspas;
-
-	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
 };
 
 class Molino : public Obj {
@@ -51,6 +50,6 @@ protected:
 	SceneNode* techoNode = nullptr;
 	SceneNode* cuerpoNode = nullptr;
 	SceneNode* aspasNode = nullptr;
-
+	AspasMolino* aspas = nullptr;
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
 };
