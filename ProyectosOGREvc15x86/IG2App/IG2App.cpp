@@ -31,7 +31,7 @@ void IG2App::shutdown()
 
   delete mTrayMgr;  mTrayMgr = nullptr;
   delete mCamMgr; mCamMgr = nullptr;
-  delete molino; molino = nullptr;
+  delete rotor; rotor = nullptr;
   // do not forget to call the base 
   IG2ApplicationContext::shutdown();
 }
@@ -98,9 +98,9 @@ void IG2App::setupScene(void)
   setupHours();*/
   //Ogre::Entity* ent = mSM->createEntity("Sinbad.mesh");
 
-  nodoMolino = mSM->getRootSceneNode()->createChildSceneNode("Molino");
-  molino = new Molino(nodoMolino, 6);
-  addInputListener(molino);
+  nodoRotor = mSM->getRootSceneNode()->createChildSceneNode("Rotor");
+  rotor = new RotorDron(nodoRotor, 6);
+  addInputListener(rotor);
   //------------------------------------------------------------------------
 
   mCamMgr = new OgreBites::CameraMan(mCamNode);

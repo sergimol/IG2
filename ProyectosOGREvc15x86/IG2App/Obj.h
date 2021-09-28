@@ -23,7 +23,7 @@ protected:
 
 class Aspa : public Obj {
 public:
-	Aspa(SceneNode* node);
+	Aspa(SceneNode* node, bool adorno);
 	~Aspa() {};
 protected:
 	SceneNode* tableroNode = nullptr;
@@ -32,8 +32,9 @@ protected:
 
 class AspasMolino : public Obj {
 public:
-	AspasMolino(SceneNode* node, int n);
+	AspasMolino(SceneNode* node, int n, bool a);
 	~AspasMolino() {};
+
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
 protected:
 	SceneNode* cilindroCentralNode = nullptr;
@@ -50,6 +51,21 @@ protected:
 	SceneNode* techoNode = nullptr;
 	SceneNode* cuerpoNode = nullptr;
 	SceneNode* aspasNode = nullptr;
+	SceneNode* nodoRotarAspas = nullptr;
 	AspasMolino* aspas = nullptr;
+
+	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
+};
+
+class RotorDron : public Obj {
+public:
+	RotorDron(SceneNode* node, int n);
+	~RotorDron() {};
+protected:
+	int numHelices;
+	SceneNode* esferaNode = nullptr;
+	SceneNode* helicesNode = nullptr;
+	AspasMolino* helices = nullptr;
+
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
 };
