@@ -43,3 +43,14 @@ protected:
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
 };
 
+class Molino : public Obj {
+public:
+	Molino(SceneNode* node, int n);
+	~Molino() {};
+protected:
+	SceneNode* techoNode = nullptr;
+	SceneNode* cuerpoNode = nullptr;
+	SceneNode* aspasNode = nullptr;
+
+	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
+};

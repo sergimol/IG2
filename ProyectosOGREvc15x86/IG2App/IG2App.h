@@ -39,8 +39,8 @@ protected:
   Ogre::SceneNode* mSecondsHandNode = nullptr;
   Ogre::SceneNode* mSpheresNode = nullptr;
   Ogre::SceneNode* mHourNode[12];
-  Ogre::SceneNode* nodoAspasMolino = nullptr;
-  AspasMolino* aspas = nullptr;
+  Ogre::SceneNode* nodoMolino = nullptr;
+  Molino* molino = nullptr;
 };
 
 #endif
