@@ -25,27 +25,30 @@ Aspa::Aspa(SceneNode* node, bool adorno) : Obj(node) {
 AspasMolino::AspasMolino(SceneNode* node, int n, bool a) : Obj(node)
 {
 	numAspas = n;
-	aspasNode = mNode->createChildSceneNode("Aspas");
+	aspasNode = mNode->createChildSceneNode();
 
 	Ogre::Entity* ent = mSM->createEntity("Barrel.mesh");
-	cilindroCentralNode = mNode->createChildSceneNode("Centro");
+	cilindroCentralNode = mNode->createChildSceneNode();
 	cilindroCentralNode->attachObject(ent);
 	cilindroCentralNode->scale(20, 10, 20);
 	cilindroCentralNode->pitch(Degree(90));
 
 	for (int i = 0; i < numAspas; ++i) {
-		arrayAspas.push_back(aspasNode->createChildSceneNode("Aspa " + std::to_string(i)));
+		arrayAspas.push_back(aspasNode->createChildSceneNode());
 		Aspa* aux = new Aspa(arrayAspas[i], a);
 
 		arrayAspas[i]->roll(Degree(360 / numAspas * i));
 	}
 }
 
-bool AspasMolino::keyPressed(const OgreBites::KeyboardEvent& evt)
+bool AspasMolino::keyPressed(const OgreBites::KeyboardEvent& evt, int id)
 {
 	if (evt.keysym.sym == SDLK_g)
 	{
-		aspasNode->roll(Ogre::Degree(-1));
+		if(id % 2 == 0)
+			aspasNode->roll(Ogre::Degree(-1));
+		else
+			aspasNode->roll(Ogre::Degree(1));
 	}
 	else if (evt.keysym.sym == SDLK_c) {
 		cilindroCentralNode->translate(0, 0, -1);
@@ -83,7 +86,7 @@ bool Molino::keyPressed(const OgreBites::KeyboardEvent& evt)
 		aspasNode->translate(0, 0, 80, SceneNode::TS_LOCAL);
 	}
 	else
-		aspas->keyPressed(evt);
+		aspas->keyPressed(evt, 0);
 
 	return true;
 }
@@ -94,17 +97,65 @@ RotorDron::RotorDron(SceneNode* node, int n) : Obj(node)
 	esferaNode = mNode->createChildSceneNode();
 	esferaNode->attachObject(ent);
 
-	numHelices = n;
-	helicesNode = mNode->createChildSceneNode("Aspas Molino");
-	helices = new AspasMolino(helicesNode, numHelices, false);
+	numAspas = n;
+	helicesNode = mNode->createChildSceneNode();
+	helices = new AspasMolino(helicesNode, numAspas, false);
 	helicesNode->scale(0.2, 0.2, 0.2);
 	helicesNode->pitch(Degree(-90));
 	helicesNode->translate(0, 100, 0);
 }
 
-bool RotorDron::keyPressed(const OgreBites::KeyboardEvent& evt)
+bool RotorDron::keyPressed(const OgreBites::KeyboardEvent& evt, int id)
 {	
-	helices->keyPressed(evt);
+	helices->keyPressed(evt, id);
+
+	return true;
+}
+
+BrazoDron::BrazoDron(SceneNode* node, int n, int i) : Obj(node)
+{
+	id = i;
+	Ogre::Entity* ent = mSM->createEntity("Barrel.mesh");
+	cilindroNode = mNode->createChildSceneNode();
+	cilindroNode->attachObject(ent);
+	cilindroNode->scale(20, 50, 20);
+	cilindroNode->pitch(Degree(90));
+	cilindroNode->translate(0, 0, 235);
+
+	numAspas = n;
+	rotorNode = mNode->createChildSceneNode();
+	rotor = new RotorDron(rotorNode, numAspas);
+}
+
+bool BrazoDron::keyPressed(const OgreBites::KeyboardEvent& evt)
+{
+	rotor->keyPressed(evt, id);
+
+	return true;
+}
+
+Dron::Dron(SceneNode* node, int nBrazos, int nAspas) : Obj(node)
+{
+	numBrazos = nBrazos;
+	numAspas = nAspas;
+
+	Ogre::Entity* ent = mSM->createEntity("sphere.mesh");
+	esferaNode = mNode->createChildSceneNode();
+	esferaNode->attachObject(ent);
+	esferaNode->scale(2, 2, 2);
+	
+	for (int i = 0; i < numBrazos; ++i) {
+		brazoNodes.push_back(mNode->createChildSceneNode());
+		brazos.push_back(new BrazoDron(brazoNodes[i], numAspas, i));
+		brazoNodes[i]->yaw(Degree(360 / numBrazos * i));
+		brazoNodes[i]->translate(0, 0, -500, SceneNode::TS_LOCAL);
+	}
+}
+
+bool Dron::keyPressed(const OgreBites::KeyboardEvent& evt)
+{
+	for (int i = 0; i < numBrazos; ++i)
+		brazos[i]->keyPressed(evt);
 
 	return true;
 }

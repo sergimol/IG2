@@ -39,8 +39,8 @@ protected:
   Ogre::SceneNode* mSecondsHandNode = nullptr;
   Ogre::SceneNode* mSpheresNode = nullptr;
   Ogre::SceneNode* mHourNode[12];
-  Ogre::SceneNode* nodoRotor = nullptr;
-  RotorDron* rotor = nullptr;
+  Ogre::SceneNode* nodoDron = nullptr;
+  Dron* dron = nullptr;
 };
 
 #endif
