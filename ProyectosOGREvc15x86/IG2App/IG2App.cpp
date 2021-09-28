@@ -31,7 +31,7 @@ void IG2App::shutdown()
 
   delete mTrayMgr;  mTrayMgr = nullptr;
   delete mCamMgr; mCamMgr = nullptr;
-  delete aspa; aspa = nullptr;
+  delete aspas; aspas = nullptr;
   // do not forget to call the base 
   IG2ApplicationContext::shutdown();
 }
@@ -88,8 +88,8 @@ void IG2App::setupScene(void)
   //mLightNode = mCamNode->createChildSceneNode("nLuz");
   mLightNode->attachObject(luz);
 
-  mLightNode->setDirection(Ogre::Vector3(0, 0, -1));  //vec3.normalise();
-  //lightNode->setPosition(0, 0, 1000);
+  mLightNode->setDirection(Ogre::Vector3(0, -1, -1));  //vec3.normalise();
+  mLightNode->setPosition(0, 0, 1000);
  
   //------------------------------------------------------------------------
 
@@ -98,8 +98,9 @@ void IG2App::setupScene(void)
   setupHours();*/
   //Ogre::Entity* ent = mSM->createEntity("Sinbad.mesh");
 
-  nodoAspa = mSM->getRootSceneNode()->createChildSceneNode("Aspa");
-  aspa = new Aspa(nodoAspa);
+  nodoAspasMolino = mSM->getRootSceneNode()->createChildSceneNode("AspasMolino");
+  aspas = new AspasMolino(nodoAspasMolino, 12);
+  addInputListener(aspas);
   //------------------------------------------------------------------------
 
   mCamMgr = new OgreBites::CameraMan(mCamNode);
