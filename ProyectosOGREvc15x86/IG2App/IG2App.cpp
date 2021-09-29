@@ -15,8 +15,14 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
 	}
 	else if (evt.keysym.sym == SDLK_g && mClockNode != nullptr)
 		mClockNode->roll(Ogre::Degree(-1));
-	else if (evt.keysym.sym == SDLK_h && mSpheresNode != nullptr) 
-		mSpheresNode->roll(Ogre::Degree(-1));		
+	else if (evt.keysym.sym == SDLK_h) {
+		if (mSpheresNode != nullptr)
+			mSpheresNode->roll(Ogre::Degree(-1));
+		else if(ficticioDronNode != nullptr)
+			ficticioDronNode->pitch(Degree(-1));
+	}
+	else if (evt.keysym.sym == SDLK_j && ficticioDronNode != nullptr)
+		ficticioDronNode->yaw(Degree(-1));
   //else if (evt.keysym.sym == SDLK_???)
   
   return true;
