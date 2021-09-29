@@ -96,11 +96,17 @@ void IG2App::setupScene(void)
   // finally something to render
  /* mClockNode = mSM->getRootSceneNode()->createChildSceneNode("Clock");
   setupHours();*/
-  //Ogre::Entity* ent = mSM->createEntity("Sinbad.mesh");
+  Ogre::Entity* ent = mSM->createEntity("sphere.mesh");
+  planetaNode = mSM->getRootSceneNode()->createChildSceneNode("Planeta");
+  planetaNode->attachObject(ent);
+  planetaNode->scale(5, 5, 5);
 
-  nodoDron = mSM->getRootSceneNode()->createChildSceneNode("Dron");
+  ficticioDronNode = mSM->getRootSceneNode()->createChildSceneNode("Dron ficticio");
+  nodoDron = ficticioDronNode->createChildSceneNode("Dron");
   dron = new Dron(nodoDron, 8, 12);
   addInputListener(dron);
+  nodoDron->scale(0.1, 0.1, 0.1);
+  nodoDron->translate(0, 550, 0);
   //------------------------------------------------------------------------
 
   mCamMgr = new OgreBites::CameraMan(mCamNode);

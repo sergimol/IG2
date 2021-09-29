@@ -41,6 +41,8 @@ protected:
   Ogre::SceneNode* mHourNode[12];
   Ogre::SceneNode* nodoDron = nullptr;
   Dron* dron = nullptr;
+  SceneNode* planetaNode = nullptr;
+  SceneNode* ficticioDronNode = nullptr;
 };
 
 #endif

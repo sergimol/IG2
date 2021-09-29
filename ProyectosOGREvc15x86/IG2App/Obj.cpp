@@ -164,8 +164,9 @@ Dron::Dron(SceneNode* node, int nBrazos, int nAspas) : Obj(node)
 		brazoNodes.push_back(mNode->createChildSceneNode());
 		brazos.push_back(new BrazoDron(brazoNodes[i], numAspas, i));
 		brazoNodes[i]->yaw(Degree(360 / numBrazos * i));
-		brazoNodes[i]->translate(0, 0, -500, SceneNode::TS_LOCAL);
+		brazoNodes[i]->translate(0, 0, -450, SceneNode::TS_LOCAL);
 	}
+	brazoNodes[0]->translate(0, 0, -100, SceneNode::TS_LOCAL);
 }
 
 bool Dron::keyPressed(const OgreBites::KeyboardEvent& evt)
