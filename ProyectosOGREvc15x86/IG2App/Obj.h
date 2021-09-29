@@ -9,34 +9,37 @@
 using namespace Ogre;
 
 #pragma once
+// Clase padre para todos los objetos
 class Obj : public OgreBites::InputListener
 {
 public:
 	Obj(SceneNode* node);
 	~Obj() {};
 protected:
-	SceneNode* mNode = nullptr;
-	SceneManager* mSM = nullptr;
+	SceneNode* mNode = nullptr; // node principal
+	SceneManager* mSM = nullptr; // referencia al manager de la escena
 
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt) { return true; };
 };
 
+// Aspa de molino / helice de rotor
 class Aspa : public Obj {
 public:
-	Aspa(SceneNode* node, bool adorno);
+	Aspa(SceneNode* node, bool adorno); // el booleano indica si debe llevar adorno o no
 	~Aspa() {};
 protected:
-	SceneNode* tableroNode = nullptr;
+	SceneNode* tableroNode = nullptr; 
 	SceneNode* adornoNode = nullptr;
 };
 
+// Conjunto de aspas del molino
 class AspasMolino : public Obj {
 public:
-	AspasMolino(SceneNode* node, int n, bool a);
+	AspasMolino(SceneNode* node, int n, bool a); // n  = numero de aspas, a = para los adornos
 	~AspasMolino() {};
 
 protected:
-	SceneNode* cilindroCentralNode = nullptr;
+	SceneNode* cilindroCentralNode = nullptr; 
 	int numAspas;
 	SceneNode* aspasNode = nullptr;
 	std::vector<SceneNode*> arrayAspas;
@@ -53,7 +56,7 @@ protected:
 	SceneNode* techoNode = nullptr;
 	SceneNode* cuerpoNode = nullptr;
 	SceneNode* aspasNode = nullptr;
-	SceneNode* nodoRotarAspas = nullptr;
+	SceneNode* nodoRotarAspas = nullptr; // nodo ficticio para rotar las aspas alrededor del molino
 	AspasMolino* aspas = nullptr;
 
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
