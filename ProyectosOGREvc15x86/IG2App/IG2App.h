@@ -43,6 +43,13 @@ protected:
   Dron* dron = nullptr;
   SceneNode* planetaNode = nullptr;
   SceneNode* ficticioDronNode = nullptr;
+
+  //AVION
+  SceneNode* avionNode = nullptr;
+  Avion* avionObj = nullptr;
+
+  //PLANO
+  SceneNode* planoNode = nullptr;
 };
 
 #endif

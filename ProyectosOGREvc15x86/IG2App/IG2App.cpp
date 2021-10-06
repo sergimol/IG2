@@ -21,6 +21,16 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
 		else if(ficticioDronNode != nullptr)
 			ficticioDronNode->pitch(Degree(-1));
 	}
+	else if (evt.keysym.sym == SDLK_b)
+	{
+		if (mSpheresNode != nullptr)
+		{
+			nodoDron->translate(0, -550, 0, SceneNode::TS_LOCAL);
+			nodoDron->pitch(Ogre::Degree(-1));
+			nodoDron->translate(0, 550, 0, SceneNode::TS_LOCAL);
+		}
+
+	}
 	else if (evt.keysym.sym == SDLK_j && ficticioDronNode != nullptr)
 		ficticioDronNode->yaw(Degree(-1));
   //else if (evt.keysym.sym == SDLK_???)
@@ -102,7 +112,7 @@ void IG2App::setupScene(void)
   // finally something to render
  /* mClockNode = mSM->getRootSceneNode()->createChildSceneNode("Clock");
   setupHours();*/
-  Ogre::Entity* ent = mSM->createEntity("sphere.mesh");
+ /* Ogre::Entity* ent = mSM->createEntity("sphere.mesh");
   planetaNode = mSM->getRootSceneNode()->createChildSceneNode("Planeta");
   planetaNode->attachObject(ent);
   planetaNode->scale(5, 5, 5);
@@ -112,7 +122,17 @@ void IG2App::setupScene(void)
   dron = new Dron(nodoDron, 8, 12);
   addInputListener(dron);
   nodoDron->scale(0.1, 0.1, 0.1);
-  nodoDron->translate(0, 550, 0);
+  nodoDron->translate(0, 550, 0);*/
+
+  //AVION
+  avionNode = mSM->getRootSceneNode()->createChildSceneNode();
+  avionObj = new Avion(avionNode);
+  addInputListener(avionObj);
+
+  //PLANO
+  //Ogre::Entity* plane = mSM->createEntity("mPlane1080x800");
+  //planoNode->attachObject(plane);
+  //planoNode->translate(0, -100, 0);
   //------------------------------------------------------------------------
 
   mCamMgr = new OgreBites::CameraMan(mCamNode);

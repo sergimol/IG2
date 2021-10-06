@@ -104,3 +104,23 @@ protected:
 	std::vector<BrazoDron*> brazos;
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
 };
+
+class Avion : public Obj {
+public:
+	Avion(SceneNode* node);
+	~Avion() {};
+protected:
+	int numBrazos;
+	int numAspas;
+	SceneNode* cuerpoNode = nullptr;
+	SceneNode* alaINode = nullptr;
+	SceneNode* alaDNode = nullptr;
+	SceneNode* frenteNode = nullptr;
+	SceneNode* pilotoNode = nullptr;
+	SceneNode* heliceINode = nullptr;
+	AspasMolino* heliceIObj;
+	AspasMolino* heliceDObj;
+	SceneNode* heliceDNode = nullptr;
+
+	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
+};

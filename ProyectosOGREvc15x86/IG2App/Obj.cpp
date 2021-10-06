@@ -176,3 +176,65 @@ bool Dron::keyPressed(const OgreBites::KeyboardEvent& evt)
 
 	return true;
 }
+
+
+//AVION
+Avion::Avion(SceneNode* node) : Obj(node)
+{
+
+	//CUERPO
+	Ogre::Entity* ent = mSM->createEntity("sphere.mesh");
+	cuerpoNode = mNode->createChildSceneNode();
+	cuerpoNode->setScale(0.5, 0.5, 0.5);
+	cuerpoNode->attachObject(ent);
+
+	//ALAS
+	ent = mSM->createEntity("cube.mesh");
+	alaINode = mNode->createChildSceneNode();
+	alaINode->attachObject(ent);
+	alaINode->setScale(1.2, 0.05, 0.5);
+	alaINode->translate(-80, 0, 0);
+	ent = mSM->createEntity("cube.mesh");
+	alaDNode = mNode->createChildSceneNode();
+	alaDNode->attachObject(ent);
+	alaDNode->setScale(1.2, 0.05, 0.5);
+	alaDNode->translate(80, 0, 0);
+
+
+	//FRENTE CABINA
+	ent = mSM->createEntity("Barrel.mesh");
+	frenteNode = mNode->createChildSceneNode();
+	frenteNode->attachObject(ent);
+	frenteNode->setScale(1, 1, 1);
+	frenteNode->pitch(Ogre::Degree(90));
+	frenteNode->setScale(5, 5, 5);
+	frenteNode->translate(0, 0, 50);
+
+	//SANDOKAN
+	ent = mSM->createEntity("ninja.mesh");
+	pilotoNode = mNode->createChildSceneNode();
+	pilotoNode->attachObject(ent);
+	pilotoNode->translate(0, 10, 0);
+	pilotoNode->yaw(Ogre::Degree(180));
+	pilotoNode->setScale(0.3, 0.3, 0.3);
+
+	//HELICES
+	heliceINode = mNode->createChildSceneNode();
+	heliceIObj = new AspasMolino(heliceINode, 5, true);
+	heliceINode->translate(-90, 0, 25);
+	heliceINode->setScale(0.06, 0.06, 0.06);
+	heliceDNode = mNode->createChildSceneNode();
+	heliceDObj = new AspasMolino(heliceDNode, 5, true);
+	heliceDNode->translate(90, 0, 25);
+	heliceDNode->setScale(0.06, 0.06, 0.06);
+
+
+}
+
+bool Avion::keyPressed(const OgreBites::KeyboardEvent& evt)
+{
+	heliceDObj->keyPressed(evt, 0);
+	heliceIObj->keyPressed(evt, 0);
+
+	return true;
+}
