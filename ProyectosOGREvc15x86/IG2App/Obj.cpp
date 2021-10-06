@@ -11,15 +11,16 @@ Aspa::Aspa(SceneNode* node, bool adorno) : Obj(node) {
 	Ogre::Entity* ent = mSM->createEntity("cube.mesh");
 	tableroNode = mNode->createChildSceneNode();
 	tableroNode->attachObject(ent);
-	tableroNode->scale(10, 1, 0.1);
+	tableroNode->scale(5, 1, 0.1);
+	tableroNode->translate(225, 0, 0);
 
 	// Adorno
 	if (adorno) {
 		ent = mSM->createEntity("Barrel.mesh");
 		adornoNode = mNode->createChildSceneNode();
 		adornoNode->attachObject(ent);
-		adornoNode->scale(5, 15, 5);
-		adornoNode->setPosition(450, 0, 30);
+		adornoNode->scale(5, 12, 5);
+		adornoNode->setPosition(450, 0, 20);
 		adornoNode->setInheritOrientation(false);
 	}
 }
