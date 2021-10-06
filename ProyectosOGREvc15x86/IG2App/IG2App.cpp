@@ -130,9 +130,20 @@ void IG2App::setupScene(void)
   addInputListener(avionObj);
 
   //PLANO
-  //Ogre::Entity* plane = mSM->createEntity("mPlane1080x800");
-  //planoNode->attachObject(plane);
-  //planoNode->translate(0, -100, 0);
+  //Crear la malla del plano
+  MeshManager::getSingleton().createPlane("mPlane1080x800", //nombre
+	  ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,    //grupo de recursos utilizados
+	  Plane(Vector3::UNIT_Y, 0),							//orientacion del plano
+	  1080, 800,											//dimensiones
+	  100, 80,												//divisiones de la malla
+	  true,													//creacion de normales 
+	  1, 1.0, 1.0,											//coordenadas de texturas con repeticion
+	  Vector3::UNIT_Z);										//orientacion de la textura
+  //Cargamos la malla y inicializamos el nodo
+  Ogre::Entity* plane = mSM->createEntity("mPlane1080x800");
+  planoNode = mSM->getRootSceneNode()->createChildSceneNode();
+  planoNode->attachObject(plane);
+  planoNode->translate(0, -100, 0);
   //------------------------------------------------------------------------
 
   mCamMgr = new OgreBites::CameraMan(mCamNode);
