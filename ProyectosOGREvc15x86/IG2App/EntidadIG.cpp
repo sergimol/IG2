@@ -1,11 +1,10 @@
 #include "EntidadIG.h"
 
+// Inicializacion del vector
+std::vector<EntidadIG*> EntidadIG::appListeners = std::vector<EntidadIG*>(0, nullptr);
+
 EntidadIG::EntidadIG(SceneNode* node)
 {
-	//Esto del vector igual esta mal
-	appListeners = std::vector<EntidadIG*>(0, nullptr);
-	//O igual no
-
 	mNode = node;
 	mSM = mNode->getCreator();
 }
