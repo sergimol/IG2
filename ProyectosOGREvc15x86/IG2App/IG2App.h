@@ -7,6 +7,7 @@
 #include <OgreCameraMan.h>
 
 #include "Obj.h"
+#include "EntidadIG.h"
 
 
 class IG2App : public  OgreBites::IG2ApplicationContext, OgreBites::InputListener 
@@ -43,13 +44,12 @@ protected:
   Dron* dron = nullptr;
   SceneNode* planetaNode = nullptr;
   SceneNode* ficticioDronNode = nullptr;
+  SceneNode* planoNode = nullptr;
+  Plano* plano = nullptr;
 
   //AVION
   SceneNode* avionNode = nullptr;
   Avion* avionObj = nullptr;
-
-  //PLANO
-  SceneNode* planoNode = nullptr;
 };
 
 #endif

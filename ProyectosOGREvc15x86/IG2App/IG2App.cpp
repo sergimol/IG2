@@ -18,7 +18,7 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
 	else if (evt.keysym.sym == SDLK_h) {
 		if (mSpheresNode != nullptr)
 			mSpheresNode->roll(Ogre::Degree(-1));
-		else if(ficticioDronNode != nullptr)
+		else if (ficticioDronNode != nullptr)
 			ficticioDronNode->pitch(Degree(-1));
 	}
 	else if (evt.keysym.sym == SDLK_b)
@@ -33,126 +33,123 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
 	}
 	else if (evt.keysym.sym == SDLK_j && ficticioDronNode != nullptr)
 		ficticioDronNode->yaw(Degree(-1));
-  //else if (evt.keysym.sym == SDLK_???)
-  
-  return true;
+	//else if (evt.keysym.sym == SDLK_???)
+
+	for (EntidadIG* a : EntidadIG::appListeners)
+		a->keyPressed(evt);
+
+	return true;
 }
 
 void IG2App::shutdown()
 {
-  mShaderGenerator->removeSceneManager(mSM);  
-  mSM->removeRenderQueueListener(mOverlaySystem);  
-					
-  mRoot->destroySceneManager(mSM);  
+	mShaderGenerator->removeSceneManager(mSM);
+	mSM->removeRenderQueueListener(mOverlaySystem);
 
-  delete mTrayMgr;  mTrayMgr = nullptr;
-  delete mCamMgr; mCamMgr = nullptr;
-  delete dron; dron = nullptr;
-  // do not forget to call the base 
-  IG2ApplicationContext::shutdown();
+	mRoot->destroySceneManager(mSM);
+
+	delete mTrayMgr;  mTrayMgr = nullptr;
+	delete mCamMgr; mCamMgr = nullptr;
+	delete dron; dron = nullptr;
+
+	//Pues limpio el vector 
+	/*for (EntidadIG* a : EntidadIG::appListeners)
+		delete a;
+	EntidadIG::appListeners.clear();*/
+	// do not forget to call the base 
+	IG2ApplicationContext::shutdown();
 }
 
 void IG2App::setup(void)
 {
-  // do not forget to call the base first
-  IG2ApplicationContext::setup();
+	// do not forget to call the base first
+	IG2ApplicationContext::setup();
 
-  mSM = mRoot->createSceneManager();  
+	mSM = mRoot->createSceneManager();
 
-  // register our scene with the RTSS
-  mShaderGenerator->addSceneManager(mSM);
+	// register our scene with the RTSS
+	mShaderGenerator->addSceneManager(mSM);
 
-  mSM->addRenderQueueListener(mOverlaySystem);
+	mSM->addRenderQueueListener(mOverlaySystem);
 
-  mTrayMgr = new OgreBites::TrayManager("TrayGUISystem", mWindow.render);  
-  mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
-  addInputListener(mTrayMgr);
+	mTrayMgr = new OgreBites::TrayManager("TrayGUISystem", mWindow.render);
+	mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
+	addInputListener(mTrayMgr);
 
-  addInputListener(this);   
-  setupScene();
+	addInputListener(this);
+	setupScene();
 }
 
 void IG2App::setupScene(void)
 {
-  // create the camera
-  Camera* cam = mSM->createCamera("Cam");
-  cam->setNearClipDistance(1); 
-  cam->setFarClipDistance(10000);
-  cam->setAutoAspectRatio(true);
-  //cam->setPolygonMode(Ogre::PM_WIREFRAME); 
+	// create the camera
+	Camera* cam = mSM->createCamera("Cam");
+	cam->setNearClipDistance(1);
+	cam->setFarClipDistance(10000);
+	cam->setAutoAspectRatio(true);
+	//cam->setPolygonMode(Ogre::PM_WIREFRAME); 
 
-  mCamNode = mSM->getRootSceneNode()->createChildSceneNode("nCam");
-  mCamNode->attachObject(cam);
+	mCamNode = mSM->getRootSceneNode()->createChildSceneNode("nCam");
+	mCamNode->attachObject(cam);
 
-  mCamNode->setPosition(0, 0, 1000);
-  mCamNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
-  mCamNode->setDirection(Ogre::Vector3((0, 0, 0.0)));  
-  
-  // and tell it to render into the main window
-  Viewport* vp = getRenderWindow()->addViewport(cam);
-  vp->setBackgroundColour(Ogre::ColourValue(0.7, 0.8, 0.9));
+	mCamNode->setPosition(0, 0, 1000);
+	mCamNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
+	mCamNode->setDirection(Ogre::Vector3((0, 0, 0.0)));
 
-  //------------------------------------------------------------------------
+	// and tell it to render into the main window
+	Viewport* vp = getRenderWindow()->addViewport(cam);
+	vp->setBackgroundColour(Ogre::ColourValue(0.7, 0.8, 0.9));
 
-  // without light we would just get a black screen 
+	//------------------------------------------------------------------------
 
-  Light* luz = mSM->createLight("Luz");
-  luz->setType(Ogre::Light::LT_DIRECTIONAL);
-  luz->setDiffuseColour(0.75, 0.75, 0.75);
+	// without light we would just get a black screen 
 
-  mLightNode = mSM->getRootSceneNode()->createChildSceneNode("nLuz");
-  //mLightNode = mCamNode->createChildSceneNode("nLuz");
-  mLightNode->attachObject(luz);
+	Light* luz = mSM->createLight("Luz");
+	luz->setType(Ogre::Light::LT_DIRECTIONAL);
+	luz->setDiffuseColour(0.75, 0.75, 0.75);
 
-  mLightNode->setDirection(Ogre::Vector3(0, -1, -1));  //vec3.normalise();
-  //mLightNode->setPosition(0, 0, 1000);
- 
-  //------------------------------------------------------------------------
+	mLightNode = mSM->getRootSceneNode()->createChildSceneNode("nLuz");
+	//mLightNode = mCamNode->createChildSceneNode("nLuz");
+	mLightNode->attachObject(luz);
 
-  // finally something to render
- /* mClockNode = mSM->getRootSceneNode()->createChildSceneNode("Clock");
-  setupHours();*/
- /* Ogre::Entity* ent = mSM->createEntity("sphere.mesh");
-  planetaNode = mSM->getRootSceneNode()->createChildSceneNode("Planeta");
-  planetaNode->attachObject(ent);
-  planetaNode->scale(5, 5, 5);
+	mLightNode->setDirection(Ogre::Vector3(0, -1, -1));  //vec3.normalise();
+	//mLightNode->setPosition(0, 0, 1000);
 
-  ficticioDronNode = mSM->getRootSceneNode()->createChildSceneNode("Dron ficticio");
-  nodoDron = ficticioDronNode->createChildSceneNode("Dron");
-  dron = new Dron(nodoDron, 8, 12);
-  addInputListener(dron);
-  nodoDron->scale(0.1, 0.1, 0.1);
-  nodoDron->translate(0, 550, 0);*/
+	//------------------------------------------------------------------------
 
-  //AVION
-  avionNode = mSM->getRootSceneNode()->createChildSceneNode();
-  avionObj = new Avion(avionNode);
-  addInputListener(avionObj);
+	// finally something to render
+	 /* mClockNode = mSM->getRootSceneNode()->createChildSceneNode("Clock");
+	 setupHours();*/
+	Ogre::Entity* ent = mSM->createEntity("sphere.mesh");
+	planetaNode = mSM->getRootSceneNode()->createChildSceneNode("Planeta");
+	planetaNode->attachObject(ent);
+	planetaNode->scale(5, 5, 5);
 
-  //PLANO
-  //Crear la malla del plano
-  MeshManager::getSingleton().createPlane("mPlane1080x800", //nombre
-	  ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,    //grupo de recursos utilizados
-	  Plane(Vector3::UNIT_Y, 0),							//orientacion del plano
-	  1080, 800,											//dimensiones
-	  100, 80,												//divisiones de la malla
-	  true,													//creacion de normales 
-	  1, 1.0, 1.0,											//coordenadas de texturas con repeticion
-	  Vector3::UNIT_Z);										//orientacion de la textura
-  //Cargamos la malla y inicializamos el nodo
-  Ogre::Entity* plane = mSM->createEntity("mPlane1080x800");
-  planoNode = mSM->getRootSceneNode()->createChildSceneNode();
-  planoNode->attachObject(plane);
-  planoNode->translate(0, -100, 0);
-  //------------------------------------------------------------------------
+	ficticioDronNode = mSM->getRootSceneNode()->createChildSceneNode("Dron ficticio");
+	nodoDron = ficticioDronNode->createChildSceneNode("Dron");
+	dron = new Dron(nodoDron, 8, 12);
+	addInputListener(dron);
+	nodoDron->scale(0.1, 0.1, 0.1);
+	nodoDron->translate(0, 550, 0);
 
-  mCamMgr = new OgreBites::CameraMan(mCamNode);
-  addInputListener(mCamMgr);
-  mCamMgr->setStyle(OgreBites::CS_ORBIT);  
-  //mCamMgr->setTarget(mSinbadNode);  
-  //mCamMgr->setYawPitchDist(Radian(0), Degree(30), 100);
+	//AVION
+	avionNode = mSM->getRootSceneNode()->createChildSceneNode();
+	avionObj = new Avion(avionNode);
+	EntidadIG::addListener(avionObj);
+	avionNode->translate(0, 550, 0);
 
-  //------------------------------------------------------------------------
+	planoNode = mSM->getRootSceneNode()->createChildSceneNode();
+	plano = new Plano(planoNode, 1080, 800, 100, 80);
+	planoNode->pitch(Degree(90));
+	//------------------------------------------------------------------------
+
+	mCamMgr = new OgreBites::CameraMan(mCamNode);
+	addInputListener(mCamMgr);
+	mCamMgr->setStyle(OgreBites::CS_ORBIT);
+	//mCamMgr->setTarget(mSinbadNode);  
+	//mCamMgr->setYawPitchDist(Radian(0), Degree(30), 100);
+
+	//------------------------------------------------------------------------
 
 }
 
@@ -166,7 +163,7 @@ void IG2App::setupHours() {
 
 		mHourNode[i]->setPosition(Ogre::Math::Sin(Ogre::Math::DegreesToRadians(30 * i)) * 750, Ogre::Math::Cos(Ogre::Math::DegreesToRadians(30 * i)) * 750, 0);
 
-		if (i % 2 == 0) 
+		if (i % 2 == 0)
 			mSM->getSceneNode("Hora " + std::to_string(i))->setScale(0.5, 0.5, 0.5);
 	}
 
