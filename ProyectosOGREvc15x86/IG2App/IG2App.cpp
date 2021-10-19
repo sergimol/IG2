@@ -141,6 +141,7 @@ void IG2App::setupScene(void)
 	planoNode = mSM->getRootSceneNode()->createChildSceneNode();
 	plano = new Plano(planoNode, 1080, 800, 100, 80);
 	planoNode->pitch(Degree(90));
+	planoNode->translate(0, 0, -750);
 	//------------------------------------------------------------------------
 
 	mCamMgr = new OgreBites::CameraMan(mCamNode);

@@ -189,6 +189,15 @@ Dron::Dron(SceneNode* node, int nBrazos, int nAspas) : EntidadIG(node)
 		brazoNodes[i]->translate(0, 0, -450, SceneNode::TS_LOCAL);
 	}
 	brazoNodes[0]->translate(0, 0, -100, SceneNode::TS_LOCAL);
+
+	// Luz
+	foco = mSM->createLight();
+	foco->setType(Light::LT_SPOTLIGHT);
+	foco->setDiffuseColour(ColourValue(1.0f, 1.0f, 1.0f));
+	foco->setSpotlightOuterAngle(Degree(90.0f));
+	focoNode = mNode->createChildSceneNode();
+	focoNode->attachObject(foco);
+	focoNode->setDirection(Vector3(0, -1, 0));
 }
 
 bool Dron::keyPressed(const OgreBites::KeyboardEvent& evt)
@@ -250,7 +259,14 @@ Avion::Avion(SceneNode* node) : EntidadIG(node)
 	heliceDNode->translate(90, 0, 25);
 	heliceDNode->setScale(0.06, 0.06, 0.06);
 
-
+	// LUZ
+	foco = mSM->createLight();
+	foco->setType(Light::LT_SPOTLIGHT);
+	foco->setDiffuseColour(ColourValue(1.0f, 1.0f, 1.0f));
+	foco->setSpotlightOuterAngle(Degree(90.0f));
+	focoNode = mNode->createChildSceneNode();
+	focoNode->attachObject(foco);
+	focoNode->setDirection(Vector3(0, -1, 0));
 }
 
 bool Avion::keyPressed(const OgreBites::KeyboardEvent& evt)

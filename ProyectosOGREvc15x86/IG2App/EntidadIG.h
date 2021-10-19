@@ -115,6 +115,9 @@ protected:
 	SceneNode* rotorNode = nullptr;
 	std::vector<SceneNode*> brazoNodes;
 	std::vector<BrazoDron*> brazos;
+	Light* foco = nullptr;
+	SceneNode* focoNode = nullptr;
+
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
 };
 
@@ -134,6 +137,8 @@ protected:
 	AspasMolino* heliceIObj;
 	AspasMolino* heliceDObj;
 	SceneNode* heliceDNode = nullptr;
+	Light* foco = nullptr;
+	SceneNode* focoNode = nullptr;
 
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
 };
