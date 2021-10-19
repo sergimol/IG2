@@ -67,6 +67,11 @@ AspasMolino::AspasMolino(SceneNode* node, int n, bool a) : EntidadIG(node)
 	}
 }
 
+void AspasMolino::frameRendered(const Ogre::FrameEvent& evt)
+{
+	aspasNode->roll(Ogre::Degree(150 * evt.timeSinceLastFrame));
+}
+
 bool AspasMolino::keyPressed(const OgreBites::KeyboardEvent& evt, int id)
 {
 	if (evt.keysym.sym == SDLK_g)
@@ -198,6 +203,36 @@ Dron::Dron(SceneNode* node, int nBrazos, int nAspas) : EntidadIG(node)
 	focoNode = mNode->createChildSceneNode();
 	focoNode->attachObject(foco);
 	focoNode->setDirection(Vector3(0, -1, 0));
+
+	// Timer
+	myTimer = new Timer();
+}
+
+void Dron::frameRendered(const Ogre::FrameEvent& evt)
+{
+	Ogre::Real time = evt.timeSinceLastFrame;
+	if (!rotating) {
+		unsigned long a = myTimer->getMilliseconds();
+		if (a >= 2000) {
+			rotationDir = rand() % 2;
+			if (rotationDir == 0)
+				rotationDir = -1;
+			rotating = true;
+			myTimer->reset();
+		}
+		else {
+			mNode->getParent()->pitch(Degree(-10 * time));
+		}
+	}
+	else {
+		if (myTimer->getMilliseconds() >= 1000) {
+			rotating = false;
+			myTimer->reset();
+		}
+		else {
+			mNode->getParent()->yaw(Degree(rotationDir * 10 * time));
+		}
+	}
 }
 
 bool Dron::keyPressed(const OgreBites::KeyboardEvent& evt)
@@ -267,6 +302,8 @@ Avion::Avion(SceneNode* node) : EntidadIG(node)
 	focoNode = mNode->createChildSceneNode();
 	focoNode->attachObject(foco);
 	focoNode->setDirection(Vector3(0, -1, 0));
+
+	myTimer = new Timer();
 }
 
 bool Avion::keyPressed(const OgreBites::KeyboardEvent& evt)
@@ -275,6 +312,35 @@ bool Avion::keyPressed(const OgreBites::KeyboardEvent& evt)
 	heliceIObj->keyPressed(evt, 0);
 
 	return true;
+}
+
+void Avion::frameRendered(const Ogre::FrameEvent& evt)
+{
+	Ogre::Real time = evt.timeSinceLastFrame;
+	if (!rotating) {
+		unsigned long a = myTimer->getMilliseconds();
+		if (a >= 2000) {
+			rotationDir = rand() % 2;
+			if (rotationDir == 0)
+				rotationDir = -1;
+			rotating = true;
+			myTimer->reset();
+		}
+		else {
+			mNode->getParent()->pitch(Degree(25 * time));
+		}
+	}
+	else {
+		if (myTimer->getMilliseconds() >= 250) {
+			rotating = false;
+			myTimer->reset();
+		}
+		else {
+			mNode->getParent()->yaw(Degree(rotationDir * 50 * time));
+		}
+	}
+	heliceDObj->frameRendered(evt);
+	heliceIObj->frameRendered(evt);
 }
 
 Plano::Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg) : EntidadIG(node) {

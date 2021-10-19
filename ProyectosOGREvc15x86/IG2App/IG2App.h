@@ -24,6 +24,7 @@ protected:
   void setupHours();
 
   virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);  // InputListener
+  virtual void frameRendered(const Ogre::FrameEvent& evt);
       
   Ogre::SceneManager* mSM = nullptr;
   OgreBites::TrayManager* mTrayMgr = nullptr;    
@@ -50,6 +51,7 @@ protected:
   //AVION
   SceneNode* avionNode = nullptr;
   Avion* avionObj = nullptr;
+  SceneNode* avionFicticio = nullptr;
 };
 
 #endif

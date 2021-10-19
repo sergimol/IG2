@@ -19,6 +19,7 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
 		if (mSpheresNode != nullptr)
 			mSpheresNode->roll(Ogre::Degree(-1));
 		else if (ficticioDronNode != nullptr)
+			// mover el dron
 			ficticioDronNode->pitch(Degree(-1));
 	}
 	else if (evt.keysym.sym == SDLK_b)
@@ -32,6 +33,7 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
 
 	}
 	else if (evt.keysym.sym == SDLK_j && ficticioDronNode != nullptr)
+		// girar el dron
 		ficticioDronNode->yaw(Degree(-1));
 	//else if (evt.keysym.sym == SDLK_???)
 
@@ -39,6 +41,12 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
 		a->keyPressed(evt);
 
 	return true;
+}
+
+void IG2App::frameRendered(const Ogre::FrameEvent& evt)
+{
+	for (EntidadIG* a : EntidadIG::appListeners)
+		a->frameRendered(evt);
 }
 
 void IG2App::shutdown()
@@ -128,12 +136,13 @@ void IG2App::setupScene(void)
 	ficticioDronNode = mSM->getRootSceneNode()->createChildSceneNode("Dron ficticio");
 	nodoDron = ficticioDronNode->createChildSceneNode("Dron");
 	dron = new Dron(nodoDron, 8, 12);
-	addInputListener(dron);
 	nodoDron->scale(0.1, 0.1, 0.1);
 	nodoDron->translate(0, 550, 0);
+	EntidadIG::addListener(dron);
 
 	//AVION
-	avionNode = mSM->getRootSceneNode()->createChildSceneNode();
+	avionFicticio = mSM->getRootSceneNode()->createChildSceneNode();
+	avionNode = avionFicticio->createChildSceneNode();
 	avionObj = new Avion(avionNode);
 	EntidadIG::addListener(avionObj);
 	avionNode->translate(0, 550, 0);

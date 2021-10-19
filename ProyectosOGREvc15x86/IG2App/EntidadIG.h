@@ -24,7 +24,7 @@ public:
 	//Añade entidad al vector
 	static void addListener(EntidadIG* entidad);
 
-	virtual void frameRendered(const Ogre::FrameEvent& evt) {}
+	virtual void frameRendered(const Ogre::FrameEvent& evt) {};
 	void sendEvent(EntidadIG* entidad);
 	virtual void receiveEvent(EntidadIG* entidad) {};
 
@@ -58,6 +58,7 @@ protected:
 	std::vector<SceneNode*> arrayAspas;
 
 public:
+	virtual void frameRendered(const Ogre::FrameEvent& evt);
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt, int id);
 };
 
@@ -117,7 +118,12 @@ protected:
 	std::vector<BrazoDron*> brazos;
 	Light* foco = nullptr;
 	SceneNode* focoNode = nullptr;
+	Timer* myTimer;
 
+	bool rotating = false;
+	int rotationDir;
+
+	virtual void frameRendered(const Ogre::FrameEvent& evt);
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
 };
 
@@ -139,8 +145,13 @@ protected:
 	SceneNode* heliceDNode = nullptr;
 	Light* foco = nullptr;
 	SceneNode* focoNode = nullptr;
+	Timer* myTimer = nullptr;
+
+	bool rotating = false;
+	int rotationDir;
 
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
+	virtual void frameRendered(const Ogre::FrameEvent& evt);
 };
 
 class Plano : public EntidadIG {
