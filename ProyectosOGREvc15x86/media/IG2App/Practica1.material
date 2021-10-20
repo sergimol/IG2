@@ -1,0 +1,103 @@
+material Rojo 
+{
+	technique // al menos una
+	{
+		pass // al menos uno
+		{
+			diffuse 1 0 0
+		}
+	}
+}
+
+material Amarillo
+{
+	technique // al menos una
+	{
+		pass // al menos uno
+		{
+			diffuse 1 1 0
+		}
+	}
+}
+
+material Marron
+{
+	technique // al menos una
+	{
+		pass // al menos uno
+		{
+			diffuse 0.5 0.25 0
+		}
+	}
+}
+
+material Naranja
+{
+	technique // al menos una
+	{
+		pass // al menos uno
+		{
+			diffuse 0.75 0.25 0
+		}
+	}
+}
+
+material Checker
+{
+	technique // al menos una
+	{
+		pass // al menos uno
+		{
+			diffuse 0.5 0.5 0.5
+			texture_unit {
+				texture checker.png
+				colour_op modulate
+			}
+		}
+	}
+}
+
+material Dr
+{
+	technique // al menos una
+	{
+		pass // al menos uno
+		{
+			diffuse 0.5 0.5 0.5
+			texture_unit {
+				texture Dr_Bunsen_Head.jpg
+				colour_op modulate
+			}
+		}
+	}
+}
+
+material Tusk
+{
+	technique // al menos una
+	{
+		pass // al menos uno
+		{
+			diffuse 0.5 0.5 0.5
+			texture_unit {
+				texture tusk.jpg
+				colour_op replace
+			}
+		}
+	}
+}
+
+material Carlosbolon
+{
+	technique // al menos una
+	{
+		pass // al menos uno
+		{
+			diffuse 0.5 0.5 0.5
+			texture_unit {
+				texture carlosbolon.jpg
+				env_mask spherical
+			}
+		}
+	}
+}

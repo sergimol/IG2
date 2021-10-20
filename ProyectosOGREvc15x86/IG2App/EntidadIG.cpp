@@ -21,10 +21,10 @@ void EntidadIG::addListener(EntidadIG* entidad)
 	appListeners.push_back(entidad);
 }
 
-void EntidadIG::sendEvent(EntidadIG* entidad)
+void EntidadIG::sendEvent(MessageType msg, EntidadIG* entidad)
 {
 	for (EntidadIG* e : appListeners)
-		e->receiveEvent(this);
+		e->receiveEvent(msg, this);
 }
 
 Aspa::Aspa(SceneNode* node, bool adorno) : EntidadIG(node) {
@@ -34,6 +34,7 @@ Aspa::Aspa(SceneNode* node, bool adorno) : EntidadIG(node) {
 	tableroNode->attachObject(ent);
 	tableroNode->scale(5, 1, 0.1);
 	tableroNode->translate(225, 0, 0);
+	ent->setMaterialName("Marron");
 
 	// Adorno
 	if (adorno) {
@@ -43,6 +44,7 @@ Aspa::Aspa(SceneNode* node, bool adorno) : EntidadIG(node) {
 		adornoNode->scale(5, 12, 5);
 		adornoNode->setPosition(450, 0, 20);
 		adornoNode->setInheritOrientation(false);
+		ent->setMaterialName("Rojo");
 	}
 }
 
@@ -57,6 +59,7 @@ AspasMolino::AspasMolino(SceneNode* node, int n, bool a) : EntidadIG(node)
 	cilindroCentralNode->attachObject(ent);
 	cilindroCentralNode->scale(20, 10, 20);
 	cilindroCentralNode->pitch(Degree(90));
+	ent->setMaterialName("Dr");
 
 	// Aspas
 	for (int i = 0; i < numAspas; ++i) {
@@ -67,9 +70,12 @@ AspasMolino::AspasMolino(SceneNode* node, int n, bool a) : EntidadIG(node)
 	}
 }
 
-void AspasMolino::frameRendered(const Ogre::FrameEvent& evt)
+void AspasMolino::frameRendered(const Ogre::FrameEvent& evt, int id)
 {
-	aspasNode->roll(Ogre::Degree(150 * evt.timeSinceLastFrame));
+	if (id % 2 == 0)
+		aspasNode->roll(Ogre::Degree(-150 * evt.timeSinceLastFrame));
+	else
+		aspasNode->roll(Ogre::Degree(150 * evt.timeSinceLastFrame));
 }
 
 bool AspasMolino::keyPressed(const OgreBites::KeyboardEvent& evt, int id)
@@ -134,6 +140,7 @@ RotorDron::RotorDron(SceneNode* node, int n) : EntidadIG(node)
 	Ogre::Entity* ent = mSM->createEntity("sphere.mesh");
 	esferaNode = mNode->createChildSceneNode();
 	esferaNode->attachObject(ent);
+	ent->setMaterialName("Naranja");
 
 	// Helices
 	numAspas = n;
@@ -151,6 +158,10 @@ bool RotorDron::keyPressed(const OgreBites::KeyboardEvent& evt, int id)
 	return true;
 }
 
+void RotorDron::frameRendered(const Ogre::FrameEvent& evt, int id) {
+	helices->frameRendered(evt, id);
+}
+
 BrazoDron::BrazoDron(SceneNode* node, int n, int i) : EntidadIG(node)
 {
 	// Brazo
@@ -161,6 +172,7 @@ BrazoDron::BrazoDron(SceneNode* node, int n, int i) : EntidadIG(node)
 	cilindroNode->scale(20, 50, 20);
 	cilindroNode->pitch(Degree(90));
 	cilindroNode->translate(0, 0, 235);
+	ent->setMaterialName("Tusk");
 
 	// Rotor
 	numAspas = n;
@@ -175,6 +187,10 @@ bool BrazoDron::keyPressed(const OgreBites::KeyboardEvent& evt)
 	return true;
 }
 
+void BrazoDron::frameRendered(const Ogre::FrameEvent& evt, int id) {
+	rotor->frameRendered(evt, id);
+}
+
 Dron::Dron(SceneNode* node, int nBrazos, int nAspas) : EntidadIG(node)
 {
 	numBrazos = nBrazos;
@@ -185,6 +201,7 @@ Dron::Dron(SceneNode* node, int nBrazos, int nAspas) : EntidadIG(node)
 	esferaNode = mNode->createChildSceneNode();
 	esferaNode->attachObject(ent);
 	esferaNode->scale(2, 2, 2);
+	ent->setMaterialName("Rojo");
 
 	// Brazos
 	for (int i = 0; i < numBrazos; ++i) {
@@ -211,28 +228,32 @@ Dron::Dron(SceneNode* node, int nBrazos, int nAspas) : EntidadIG(node)
 void Dron::frameRendered(const Ogre::FrameEvent& evt)
 {
 	Ogre::Real time = evt.timeSinceLastFrame;
-	if (!rotating) {
-		unsigned long a = myTimer->getMilliseconds();
-		if (a >= 2000) {
-			rotationDir = rand() % 2;
-			if (rotationDir == 0)
-				rotationDir = -1;
-			rotating = true;
-			myTimer->reset();
+	if (moving) {
+		if (!rotating) {
+			unsigned long a = myTimer->getMilliseconds();
+			if (a >= 2000) {
+				rotationDir = rand() % 2;
+				if (rotationDir == 0)
+					rotationDir = -1;
+				rotating = true;
+				myTimer->reset();
+			}
+			else {
+				mNode->getParent()->pitch(Degree(-10 * time));
+			}
 		}
 		else {
-			mNode->getParent()->pitch(Degree(-10 * time));
+			if (myTimer->getMilliseconds() >= 1000) {
+				rotating = false;
+				myTimer->reset();
+			}
+			else {
+				mNode->getParent()->yaw(Degree(rotationDir * 10 * time));
+			}
 		}
 	}
-	else {
-		if (myTimer->getMilliseconds() >= 1000) {
-			rotating = false;
-			myTimer->reset();
-		}
-		else {
-			mNode->getParent()->yaw(Degree(rotationDir * 10 * time));
-		}
-	}
+	for (int i = 0; i < numBrazos; ++i)
+		brazos[i]->frameRendered(evt, i);
 }
 
 bool Dron::keyPressed(const OgreBites::KeyboardEvent& evt)
@@ -243,6 +264,18 @@ bool Dron::keyPressed(const OgreBites::KeyboardEvent& evt)
 	return true;
 }
 
+void Dron::receiveEvent(MessageType msg, EntidadIG* e) {
+	Entity* ent = static_cast<Ogre::Entity*>(esferaNode->getAttachedObject(0));
+	switch (msg)
+	{
+	case KEY_R:
+		moving = !moving;		
+		ent->setMaterialName("Rojo");
+		break;
+	default:
+		break;
+	}
+}
 
 //AVION
 Avion::Avion(SceneNode* node) : EntidadIG(node)
@@ -253,6 +286,7 @@ Avion::Avion(SceneNode* node) : EntidadIG(node)
 	cuerpoNode = mNode->createChildSceneNode();
 	cuerpoNode->setScale(0.5, 0.5, 0.5);
 	cuerpoNode->attachObject(ent);
+	ent->setMaterialName("Rojo");
 
 	//ALAS
 	ent = mSM->createEntity("cube.mesh");
@@ -260,11 +294,14 @@ Avion::Avion(SceneNode* node) : EntidadIG(node)
 	alaINode->attachObject(ent);
 	alaINode->setScale(1.2, 0.05, 0.5);
 	alaINode->translate(-80, 0, 0);
+	ent->setMaterialName("Checker");
+
 	ent = mSM->createEntity("cube.mesh");
 	alaDNode = mNode->createChildSceneNode();
 	alaDNode->attachObject(ent);
 	alaDNode->setScale(1.2, 0.05, 0.5);
 	alaDNode->translate(80, 0, 0);
+	ent->setMaterialName("Checker");
 
 
 	//FRENTE CABINA
@@ -275,6 +312,7 @@ Avion::Avion(SceneNode* node) : EntidadIG(node)
 	frenteNode->pitch(Ogre::Degree(90));
 	frenteNode->setScale(5, 5, 5);
 	frenteNode->translate(0, 0, 50);
+	ent->setMaterialName("Naranja");
 
 	//SANDOKAN
 	ent = mSM->createEntity("ninja.mesh");
@@ -283,6 +321,7 @@ Avion::Avion(SceneNode* node) : EntidadIG(node)
 	pilotoNode->translate(0, 10, 0);
 	pilotoNode->yaw(Ogre::Degree(180));
 	pilotoNode->setScale(0.3, 0.3, 0.3);
+	ent->setMaterialName("Amarillo");
 
 	//HELICES
 	heliceINode = mNode->createChildSceneNode();
@@ -308,8 +347,18 @@ Avion::Avion(SceneNode* node) : EntidadIG(node)
 
 bool Avion::keyPressed(const OgreBites::KeyboardEvent& evt)
 {
-	heliceDObj->keyPressed(evt, 0);
-	heliceIObj->keyPressed(evt, 0);
+	if (evt.keysym.sym == SDLK_g) {
+		heliceDObj->keyPressed(evt, 0);
+		heliceIObj->keyPressed(evt, 0);
+	}
+	else if (evt.keysym.sym == SDLK_r) {
+		moving = !moving;
+		Entity* ent = static_cast<Ogre::Entity*>(alaDNode->getAttachedObject(0));
+		ent->setMaterialName("Rojo");
+		ent = static_cast<Ogre::Entity*>(alaINode->getAttachedObject(0));
+		ent->setMaterialName("Rojo");
+		sendEvent(KEY_R, this);
+	}
 
 	return true;
 }
@@ -317,30 +366,32 @@ bool Avion::keyPressed(const OgreBites::KeyboardEvent& evt)
 void Avion::frameRendered(const Ogre::FrameEvent& evt)
 {
 	Ogre::Real time = evt.timeSinceLastFrame;
-	if (!rotating) {
-		unsigned long a = myTimer->getMilliseconds();
-		if (a >= 2000) {
-			rotationDir = rand() % 2;
-			if (rotationDir == 0)
-				rotationDir = -1;
-			rotating = true;
-			myTimer->reset();
+	if (moving) {
+		if (!rotating) {
+			unsigned long a = myTimer->getMilliseconds();
+			if (a >= 2000) {
+				rotationDir = rand() % 2;
+				if (rotationDir == 0)
+					rotationDir = -1;
+				rotating = true;
+				myTimer->reset();
+			}
+			else {
+				mNode->getParent()->pitch(Degree(25 * time));
+			}
 		}
 		else {
-			mNode->getParent()->pitch(Degree(25 * time));
+			if (myTimer->getMilliseconds() >= 250) {
+				rotating = false;
+				myTimer->reset();
+			}
+			else {
+				mNode->getParent()->yaw(Degree(rotationDir * 50 * time));
+			}
 		}
 	}
-	else {
-		if (myTimer->getMilliseconds() >= 250) {
-			rotating = false;
-			myTimer->reset();
-		}
-		else {
-			mNode->getParent()->yaw(Degree(rotationDir * 50 * time));
-		}
-	}
-	heliceDObj->frameRendered(evt);
-	heliceIObj->frameRendered(evt);
+	heliceDObj->frameRendered(evt, 0);
+	heliceIObj->frameRendered(evt, 0);
 }
 
 Plano::Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg) : EntidadIG(node) {
@@ -359,4 +410,12 @@ Plano::Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg) : EntidadIG(no
 	planoNode = mNode->createChildSceneNode();
 	planoNode->attachObject(plane);
 	planoNode->translate(0, -100, 0);
+}
+
+Sinbad::Sinbad(SceneNode* node) : EntidadIG(node) {
+	//CUERPO
+	Ogre::Entity* ent = mSM->createEntity("Sinbad.mesh");
+	sinbadNode = mNode->createChildSceneNode();
+	sinbadNode->setScale(500, 100, 100);
+	sinbadNode->attachObject(ent);
 }

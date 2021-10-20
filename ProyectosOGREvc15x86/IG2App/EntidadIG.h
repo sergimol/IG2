@@ -11,6 +11,7 @@
 using namespace Ogre;
 
 #pragma once
+enum MessageType { KEY_R };
 class EntidadIG:public OgreBites::InputListener
 {
 public:
@@ -25,8 +26,8 @@ public:
 	static void addListener(EntidadIG* entidad);
 
 	virtual void frameRendered(const Ogre::FrameEvent& evt) {};
-	void sendEvent(EntidadIG* entidad);
-	virtual void receiveEvent(EntidadIG* entidad) {};
+	void sendEvent(MessageType msg, EntidadIG* entidad);
+	virtual void receiveEvent(MessageType msg, EntidadIG* entidad) {};
 
 protected:
 	Ogre::SceneNode* mNode;
@@ -58,7 +59,7 @@ protected:
 	std::vector<SceneNode*> arrayAspas;
 
 public:
-	virtual void frameRendered(const Ogre::FrameEvent& evt);
+	virtual void frameRendered(const Ogre::FrameEvent& evt, int id);
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt, int id);
 };
 
@@ -88,6 +89,7 @@ protected:
 
 public:
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt, int id);
+	virtual void frameRendered(const Ogre::FrameEvent& evt, int id);
 };
 
 class BrazoDron : public EntidadIG {
@@ -103,6 +105,7 @@ protected:
 
 public:
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
+	virtual void frameRendered(const Ogre::FrameEvent& evt, int id);
 };
 
 class Dron : public EntidadIG {
@@ -113,7 +116,6 @@ protected:
 	int numBrazos;
 	int numAspas;
 	SceneNode* esferaNode = nullptr;
-	SceneNode* rotorNode = nullptr;
 	std::vector<SceneNode*> brazoNodes;
 	std::vector<BrazoDron*> brazos;
 	Light* foco = nullptr;
@@ -121,10 +123,12 @@ protected:
 	Timer* myTimer;
 
 	bool rotating = false;
+	bool moving = true;
 	int rotationDir;
 
 	virtual void frameRendered(const Ogre::FrameEvent& evt);
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
+	virtual void receiveEvent(MessageType msg, EntidadIG* e);
 };
 
 class Avion : public EntidadIG {
@@ -148,6 +152,7 @@ protected:
 	Timer* myTimer = nullptr;
 
 	bool rotating = false;
+	bool moving = true;
 	int rotationDir;
 
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
@@ -160,4 +165,12 @@ public:
 	~Plano() {};
 protected:
 	SceneNode* planoNode = nullptr;
+};
+
+class Sinbad : public EntidadIG {
+public:
+	Sinbad(SceneNode* node);
+	~Sinbad() {};
+protected:
+	SceneNode* sinbadNode = nullptr;
 };

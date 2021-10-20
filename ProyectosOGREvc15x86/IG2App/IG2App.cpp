@@ -140,6 +140,17 @@ void IG2App::setupScene(void)
 	nodoDron->translate(0, 550, 0);
 	EntidadIG::addListener(dron);
 
+	/*for (int i = 0; i < 20; ++i) {
+		SceneNode* ficticio = mSM->getRootSceneNode()->createChildSceneNode();
+		SceneNode* nodo = ficticio->createChildSceneNode();
+		Dron* d = new Dron(nodo, 3, 5);
+		nodo->scale(0.1, 0.1, 0.1);
+		nodo->translate(0, 550, 0);
+		EntidadIG::addListener(d);
+
+		microDrones.push_back(std::make_pair(nodo, d));
+	}*/
+
 	//AVION
 	avionFicticio = mSM->getRootSceneNode()->createChildSceneNode();
 	avionNode = avionFicticio->createChildSceneNode();
@@ -151,6 +162,9 @@ void IG2App::setupScene(void)
 	plano = new Plano(planoNode, 1080, 800, 100, 80);
 	planoNode->pitch(Degree(90));
 	planoNode->translate(0, 0, -750);
+
+	/*sinbadNode = mSM->getRootSceneNode()->createChildSceneNode();
+	sinbad = new Sinbad(sinbadNode);*/
 	//------------------------------------------------------------------------
 
 	mCamMgr = new OgreBites::CameraMan(mCamNode);
