@@ -22,7 +22,7 @@ protected:
   virtual void setupScene();
 
   void setupHours();
-
+ 
   virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);  // InputListener
   virtual void frameRendered(const Ogre::FrameEvent& evt);
       

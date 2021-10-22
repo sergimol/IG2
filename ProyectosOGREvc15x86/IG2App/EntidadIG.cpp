@@ -191,7 +191,7 @@ void BrazoDron::frameRendered(const Ogre::FrameEvent& evt, int id) {
 	rotor->frameRendered(evt, id);
 }
 
-Dron::Dron(SceneNode* node, int nBrazos, int nAspas) : EntidadIG(node)
+Dron::Dron(SceneNode* node, int nBrazos, int nAspas, bool control) : EntidadIG(node)
 {
 	numBrazos = nBrazos;
 	numAspas = nAspas;
@@ -201,7 +201,20 @@ Dron::Dron(SceneNode* node, int nBrazos, int nAspas) : EntidadIG(node)
 	esferaNode = mNode->createChildSceneNode();
 	esferaNode->attachObject(ent);
 	esferaNode->scale(2, 2, 2);
-	ent->setMaterialName("Rojo");
+	if (control) {
+		ent->setMaterialName("Rojo");
+
+		// Luz
+		foco = mSM->createLight();
+		foco->setType(Light::LT_SPOTLIGHT);
+		foco->setDiffuseColour(ColourValue(1.0f, 1.0f, 1.0f));
+		foco->setSpotlightOuterAngle(Degree(90.0f));
+		focoNode = mNode->createChildSceneNode();
+		focoNode->attachObject(foco);
+		focoNode->setDirection(Vector3(0, -1, 0));
+	}
+	else
+		ent->setMaterialName("Cursed");
 
 	// Brazos
 	for (int i = 0; i < numBrazos; ++i) {
@@ -211,15 +224,6 @@ Dron::Dron(SceneNode* node, int nBrazos, int nAspas) : EntidadIG(node)
 		brazoNodes[i]->translate(0, 0, -450, SceneNode::TS_LOCAL);
 	}
 	brazoNodes[0]->translate(0, 0, -100, SceneNode::TS_LOCAL);
-
-	// Luz
-	foco = mSM->createLight();
-	foco->setType(Light::LT_SPOTLIGHT);
-	foco->setDiffuseColour(ColourValue(1.0f, 1.0f, 1.0f));
-	foco->setSpotlightOuterAngle(Degree(90.0f));
-	focoNode = mNode->createChildSceneNode();
-	focoNode->attachObject(foco);
-	focoNode->setDirection(Vector3(0, -1, 0));
 
 	// Timer
 	myTimer = new Timer();
@@ -271,6 +275,9 @@ void Dron::receiveEvent(MessageType msg, EntidadIG* e) {
 	case KEY_R:
 		moving = !moving;		
 		ent->setMaterialName("Rojo");
+		break;
+	case GAME_FINISH:
+		ent->setMaterialName("Amarillo");
 		break;
 	default:
 		break;
@@ -359,13 +366,19 @@ bool Avion::keyPressed(const OgreBites::KeyboardEvent& evt)
 		ent->setMaterialName("Rojo");
 		sendEvent(KEY_R, this);
 	}
+	else if (evt.keysym.sym == SDLK_h) 
+		mNode->getParent()->pitch(Degree(1));
+	else if(evt.keysym.sym == SDLK_a)
+		mNode->getParent()->yaw(Degree(1));
+	else if(evt.keysym.sym == SDLK_d)
+		mNode->getParent()->yaw(Degree(-1));
 
 	return true;
 }
 
 void Avion::frameRendered(const Ogre::FrameEvent& evt)
 {
-	Ogre::Real time = evt.timeSinceLastFrame;
+	/*Ogre::Real time = evt.timeSinceLastFrame;
 	if (moving) {
 		if (!rotating) {
 			unsigned long a = myTimer->getMilliseconds();
@@ -389,7 +402,7 @@ void Avion::frameRendered(const Ogre::FrameEvent& evt)
 				mNode->getParent()->yaw(Degree(rotationDir * 50 * time));
 			}
 		}
-	}
+	}*/
 	heliceDObj->frameRendered(evt, 0);
 	heliceIObj->frameRendered(evt, 0);
 }

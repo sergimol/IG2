@@ -18,9 +18,23 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
 	else if (evt.keysym.sym == SDLK_h) {
 		if (mSpheresNode != nullptr)
 			mSpheresNode->roll(Ogre::Degree(-1));
-		else if (ficticioDronNode != nullptr)
-			// mover el dron
-			ficticioDronNode->pitch(Degree(-1));
+		//else if (ficticioDronNode != nullptr)
+		//	// mover el dron
+		//	ficticioDronNode->pitch(Degree(-1));
+		else if (avionFicticio != nullptr) {
+			AxisAlignedBox aabAv = avionNode->_getWorldAABB();
+			AxisAlignedBox aabDr;
+			for (int i = 0; i < microDrones.size(); ++i) {
+				aabDr = microDrones[i].first->_getWorldAABB();
+				if (aabAv.intersection(aabDr) != AxisAlignedBox()) {
+					delete microDrones[i].first;
+					delete microDrones[i].second;
+					microDrones.erase(microDrones.begin() + i);
+					if (microDrones.empty())
+						dron->receiveEvent(GAME_FINISH, nullptr);
+				}
+			}
+		}
 	}
 	else if (evt.keysym.sym == SDLK_b)
 	{
@@ -70,6 +84,8 @@ void IG2App::shutdown()
 
 void IG2App::setup(void)
 {
+	srand(time(NULL));
+
 	// do not forget to call the base first
 	IG2ApplicationContext::setup();
 
@@ -132,24 +148,28 @@ void IG2App::setupScene(void)
 	planetaNode = mSM->getRootSceneNode()->createChildSceneNode("Planeta");
 	planetaNode->attachObject(ent);
 	planetaNode->scale(5, 5, 5);
+	//ent->setMaterialName("Carlosbolon");
 
 	ficticioDronNode = mSM->getRootSceneNode()->createChildSceneNode("Dron ficticio");
 	nodoDron = ficticioDronNode->createChildSceneNode("Dron");
-	dron = new Dron(nodoDron, 8, 12);
+	dron = new Dron(nodoDron, 3, 5, true);
 	nodoDron->scale(0.1, 0.1, 0.1);
 	nodoDron->translate(0, 550, 0);
 	EntidadIG::addListener(dron);
 
-	/*for (int i = 0; i < 20; ++i) {
+	for (int i = 0; i < 50; ++i) {
 		SceneNode* ficticio = mSM->getRootSceneNode()->createChildSceneNode();
 		SceneNode* nodo = ficticio->createChildSceneNode();
-		Dron* d = new Dron(nodo, 3, 5);
-		nodo->scale(0.1, 0.1, 0.1);
+		Dron* d = new Dron(nodo, 3, 5, false);
+		nodo->scale(0.05, 0.05, 0.05);
 		nodo->translate(0, 550, 0);
+		int r = rand() % 360;
+		ficticio->yaw(Degree(r));
+		r = rand() % 360;
+		ficticio->pitch(Degree(r));
 		EntidadIG::addListener(d);
-
 		microDrones.push_back(std::make_pair(nodo, d));
-	}*/
+	}
 
 	//AVION
 	avionFicticio = mSM->getRootSceneNode()->createChildSceneNode();

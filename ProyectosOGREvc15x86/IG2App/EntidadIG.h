@@ -11,7 +11,7 @@
 using namespace Ogre;
 
 #pragma once
-enum MessageType { KEY_R };
+enum MessageType { KEY_R, GAME_FINISH };
 class EntidadIG:public OgreBites::InputListener
 {
 public:
@@ -110,8 +110,10 @@ public:
 
 class Dron : public EntidadIG {
 public:
-	Dron(SceneNode* node, int brazos, int aspas);
+	Dron(SceneNode* node, int brazos, int aspas, bool control);
 	~Dron() {};
+
+	virtual void receiveEvent(MessageType msg, EntidadIG* e);
 protected:
 	int numBrazos;
 	int numAspas;
@@ -128,7 +130,6 @@ protected:
 
 	virtual void frameRendered(const Ogre::FrameEvent& evt);
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
-	virtual void receiveEvent(MessageType msg, EntidadIG* e);
 };
 
 class Avion : public EntidadIG {
