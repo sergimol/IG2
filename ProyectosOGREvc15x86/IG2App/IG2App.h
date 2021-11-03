@@ -45,7 +45,10 @@ protected:
   Dron* dron = nullptr;
   SceneNode* planetaNode = nullptr;
   SceneNode* ficticioDronNode = nullptr;
+  SceneNode* sinbadFicticio = nullptr;
   SceneNode* planoNode = nullptr;
+  SceneNode* bombaNode = nullptr;
+  Bomba* bomba = nullptr;
   Plano* plano = nullptr;
   std::vector<std::pair<SceneNode*, Dron*>> microDrones;
   Sinbad* sinbad = nullptr;

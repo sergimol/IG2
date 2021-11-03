@@ -172,6 +172,30 @@ class Sinbad : public EntidadIG {
 public:
 	Sinbad(SceneNode* node);
 	~Sinbad() {};
+	void Arma(bool derecha);
+	void cambiaEspada();
+	void Arma();
 protected:
 	SceneNode* sinbadNode = nullptr;
+	AnimationState* baseState = nullptr;
+	AnimationState* topState = nullptr;
+	AnimationState* danceState = nullptr;
+	bool rotating = false;
+	bool dancing = false;
+	Timer* myTimer = nullptr;
+	int rotationDir;
+	bool derechaEspada = false;
+	bool dosArmas = false;
+
+	virtual void frameRendered(const Ogre::FrameEvent& evt);
+	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
+};
+
+class Bomba : public EntidadIG {
+public:
+	Bomba(SceneNode* node);
+	~Bomba() {};
+
+private:
+	SceneNode* barrelNode = nullptr;
 };

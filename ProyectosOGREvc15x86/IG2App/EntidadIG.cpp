@@ -423,12 +423,126 @@ Plano::Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg) : EntidadIG(no
 	planoNode = mNode->createChildSceneNode();
 	planoNode->attachObject(plane);
 	planoNode->translate(0, -100, 0);
+	plane->setMaterialName("Water");
 }
 
 Sinbad::Sinbad(SceneNode* node) : EntidadIG(node) {
 	//CUERPO
 	Ogre::Entity* ent = mSM->createEntity("Sinbad.mesh");
 	sinbadNode = mNode->createChildSceneNode();
-	sinbadNode->setScale(500, 100, 100);
+	sinbadNode->setScale(25, 25, 25);
 	sinbadNode->attachObject(ent);
+
+	baseState = ent->getAnimationState("RunBase");
+
+	baseState->setEnabled(true);
+	baseState->setLoop(true);
+	
+	topState = ent->getAnimationState("RunTop");
+
+	topState->setEnabled(true);
+	topState->setLoop(true);
+
+	danceState = ent->getAnimationState("Dance");
+
+	danceState->setEnabled(false);
+	danceState->setLoop(true);
+
+	myTimer = new Timer();
+	AnimationStateSet* aux = ent->getAllAnimationStates();
+	auto it = aux->getAnimationStateIterator().begin();
+	while (it != aux->getAnimationStateIterator().end())
+	{
+		auto s = it->first; ++it;
+	}
+}
+
+void Sinbad::Arma(bool derecha)
+{
+	if (!dosArmas) {
+		Entity* ent = static_cast<Ogre::Entity*>(sinbadNode->getAttachedObject(0));
+		Entity* sword = mSM->createEntity("sword", "Sword.mesh");
+		if (derecha)
+			ent->attachObjectToBone("Handle.R", sword);
+		else
+			ent->attachObjectToBone("Handle.L", sword);
+
+		derechaEspada = derecha;
+	}
+}
+
+void Sinbad::Arma() {
+	Entity* ent = static_cast<Ogre::Entity*>(sinbadNode->getAttachedObject(0));
+	Entity* sword = mSM->createEntity("sword", "Sword.mesh");
+	Entity* sword2 = mSM->createEntity("sword2", "Sword.mesh");
+	ent->attachObjectToBone("Handle.R", sword);
+	ent->attachObjectToBone("Handle.L", sword2);
+	dosArmas = true;
+}
+
+void Sinbad::cambiaEspada() {
+	if (!dosArmas) {
+		if (derechaEspada) {
+			Entity* ent = static_cast<Ogre::Entity*>(sinbadNode->getAttachedObject(0));
+			Entity* sword = static_cast<Ogre::Entity*>(ent->detachObjectFromBone("sword"));
+			ent->attachObjectToBone("Handle.L", sword);
+		}
+		else {
+			Entity* ent = static_cast<Ogre::Entity*>(sinbadNode->getAttachedObject(0));
+			Entity* sword = static_cast<Ogre::Entity*>(ent->detachObjectFromBone("sword"));
+			ent->attachObjectToBone("Handle.R", sword);
+		}
+		derechaEspada = !derechaEspada;
+	}
+}
+
+void Sinbad::frameRendered(const Ogre::FrameEvent& evt) {
+	if (!dancing) {
+		baseState->addTime(evt.timeSinceLastFrame);
+		topState->addTime(evt.timeSinceLastFrame);
+		Ogre::Real time = evt.timeSinceLastFrame;
+		if (!rotating) {
+			unsigned long a = myTimer->getMilliseconds();
+			if (a >= 2000) {
+				rotationDir = rand() % 2;
+				if (rotationDir == 0)
+					rotationDir = -1;
+				rotating = true;
+				myTimer->reset();
+			}
+		}
+		else {
+			if (myTimer->getMilliseconds() >= 250) {
+				rotating = false;
+				myTimer->reset();
+			}
+			else {
+				mNode->getParent()->yaw(Degree(rotationDir * 50 * time));
+			}
+		}
+		mNode->getParent()->pitch(Degree(25 * time));
+	}
+	else {
+		danceState->addTime(evt.timeSinceLastFrame);
+	}
+}
+
+bool Sinbad::keyPressed(const OgreBites::KeyboardEvent& evt)
+{
+	if (evt.keysym.sym == SDLK_c) {
+		dancing = !dancing;
+		danceState->setEnabled(dancing);
+		baseState->setEnabled(!dancing);
+		topState->setEnabled(!dancing);
+	}
+	return true;
+}
+
+Bomba::Bomba(SceneNode* node) : EntidadIG(node)
+{
+	Ogre::Entity* ent = mSM->createEntity("Barrel.mesh");
+	barrelNode = mNode->createChildSceneNode();
+	barrelNode->attachObject(ent);
+	barrelNode->setScale(25, 25, 25);
+	ent->setMaterialName("Checker");
 }

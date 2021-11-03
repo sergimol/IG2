@@ -116,3 +116,18 @@ material Cursed
 		}
 	}
 }
+
+material Water
+{
+	technique // al menos una
+	{
+		pass // al menos uno
+		{
+			diffuse 0.5 0.5 0.5
+			texture_unit {
+				texture Water02.jpg
+				scroll_anim -0.1 0.0 
+			}
+		}
+	}
+}

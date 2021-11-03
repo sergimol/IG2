@@ -144,20 +144,20 @@ void IG2App::setupScene(void)
 	// finally something to render
 	 /* mClockNode = mSM->getRootSceneNode()->createChildSceneNode("Clock");
 	 setupHours();*/
-	Ogre::Entity* ent = mSM->createEntity("sphere.mesh");
+	/*Ogre::Entity* ent = mSM->createEntity("sphere.mesh");
 	planetaNode = mSM->getRootSceneNode()->createChildSceneNode("Planeta");
 	planetaNode->attachObject(ent);
-	planetaNode->scale(5, 5, 5);
-	//ent->setMaterialName("Carlosbolon");
+	planetaNode->scale(5, 5, 5);*/
+	/*ent->setMaterialName("Carlosbolon");*/
 
-	ficticioDronNode = mSM->getRootSceneNode()->createChildSceneNode("Dron ficticio");
+	/*ficticioDronNode = mSM->getRootSceneNode()->createChildSceneNode("Dron ficticio");
 	nodoDron = ficticioDronNode->createChildSceneNode("Dron");
 	dron = new Dron(nodoDron, 3, 5, true);
 	nodoDron->scale(0.1, 0.1, 0.1);
 	nodoDron->translate(0, 550, 0);
-	EntidadIG::addListener(dron);
+	EntidadIG::addListener(dron);*/
 
-	for (int i = 0; i < 50; ++i) {
+	/*for (int i = 0; i < 50; ++i) {
 		SceneNode* ficticio = mSM->getRootSceneNode()->createChildSceneNode();
 		SceneNode* nodo = ficticio->createChildSceneNode();
 		Dron* d = new Dron(nodo, 3, 5, false);
@@ -169,22 +169,28 @@ void IG2App::setupScene(void)
 		ficticio->pitch(Degree(r));
 		EntidadIG::addListener(d);
 		microDrones.push_back(std::make_pair(nodo, d));
-	}
+	}*/
 
 	//AVION
-	avionFicticio = mSM->getRootSceneNode()->createChildSceneNode();
+	/*avionFicticio = mSM->getRootSceneNode()->createChildSceneNode();
 	avionNode = avionFicticio->createChildSceneNode();
 	avionObj = new Avion(avionNode);
 	EntidadIG::addListener(avionObj);
-	avionNode->translate(0, 550, 0);
+	avionNode->translate(0, 550, 0);*/
 
 	planoNode = mSM->getRootSceneNode()->createChildSceneNode();
 	plano = new Plano(planoNode, 1080, 800, 100, 80);
-	planoNode->pitch(Degree(90));
-	planoNode->translate(0, 0, -750);
 
-	/*sinbadNode = mSM->getRootSceneNode()->createChildSceneNode();
-	sinbad = new Sinbad(sinbadNode);*/
+	sinbadFicticio = mSM->getRootSceneNode()->createChildSceneNode();
+	sinbadNode = sinbadFicticio->createChildSceneNode();
+	sinbad = new Sinbad(sinbadNode);
+	sinbadNode->translate(0, 625, 0);
+	EntidadIG::addListener(sinbad);
+
+	bombaNode = mSM->getRootSceneNode()->createChildSceneNode();
+	bomba = new Bomba(bombaNode);
+	bombaNode->translate(0, 625, 0);
+	EntidadIG::addListener(bomba);
 	//------------------------------------------------------------------------
 
 	mCamMgr = new OgreBites::CameraMan(mCamNode);
