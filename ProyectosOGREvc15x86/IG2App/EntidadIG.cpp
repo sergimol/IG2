@@ -407,10 +407,10 @@ void Avion::frameRendered(const Ogre::FrameEvent& evt)
 	heliceIObj->frameRendered(evt, 0);
 }
 
-Plano::Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg) : EntidadIG(node) {
+Plano::Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg, string material, Vector3 translation) : EntidadIG(node) {
 	//PLANO
   //Crear la malla del plano
-	MeshManager::getSingleton().createPlane("mPlane1080x800", //nombre
+	MeshManager::getSingleton().createPlane("mPlane1080x800" + material, //nombre
 		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,    //grupo de recursos utilizados
 		Plane(Vector3::UNIT_Y, 0),							//orientacion del plano
 		w, h,											//dimensiones 1080 x 800
@@ -419,18 +419,18 @@ Plano::Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg) : EntidadIG(no
 		1, 1.0, 1.0,											//coordenadas de texturas con repeticion
 		Vector3::UNIT_Z);										//orientacion de la textura
 	//Cargamos la malla y inicializamos el nodo
-	Ogre::Entity* plane = mSM->createEntity("mPlane1080x800");
+	Ogre::Entity* plane = mSM->createEntity("mPlane1080x800" + material);
 	planoNode = mNode->createChildSceneNode();
 	planoNode->attachObject(plane);
-	planoNode->translate(0, -100, 0);
-	plane->setMaterialName("Water");
+	plane->setMaterialName(material);
+	planoNode->translate(translation);
 }
 
 Sinbad::Sinbad(SceneNode* node) : EntidadIG(node) {
 	//CUERPO
 	Ogre::Entity* ent = mSM->createEntity("Sinbad.mesh");
 	sinbadNode = mNode->createChildSceneNode();
-	sinbadNode->setScale(25, 25, 25);
+	sinbadNode->setScale(20, 20, 20);
 	sinbadNode->attachObject(ent);
 
 	baseState = ent->getAnimationState("RunBase");
@@ -500,7 +500,7 @@ void Sinbad::frameRendered(const Ogre::FrameEvent& evt) {
 	if (!dancing) {
 		baseState->addTime(evt.timeSinceLastFrame);
 		topState->addTime(evt.timeSinceLastFrame);
-		Ogre::Real time = evt.timeSinceLastFrame;
+		/*Ogre::Real time = evt.timeSinceLastFrame;
 		if (!rotating) {
 			unsigned long a = myTimer->getMilliseconds();
 			if (a >= 2000) {
@@ -520,7 +520,7 @@ void Sinbad::frameRendered(const Ogre::FrameEvent& evt) {
 				mNode->getParent()->yaw(Degree(rotationDir * 50 * time));
 			}
 		}
-		mNode->getParent()->pitch(Degree(25 * time));
+		mNode->getParent()->pitch(Degree(25 * time));*/
 	}
 	else {
 		danceState->addTime(evt.timeSinceLastFrame);
@@ -535,6 +535,11 @@ bool Sinbad::keyPressed(const OgreBites::KeyboardEvent& evt)
 		baseState->setEnabled(!dancing);
 		topState->setEnabled(!dancing);
 	}
+	else if (evt.keysym.sym == SDLK_t) {
+		for (int i = 0; i < appListeners.size(); ++i) {
+			appListeners[i]->receiveEvent(KEY_T, nullptr);
+		}
+	}
 	return true;
 }
 
@@ -543,6 +548,56 @@ Bomba::Bomba(SceneNode* node) : EntidadIG(node)
 	Ogre::Entity* ent = mSM->createEntity("Barrel.mesh");
 	barrelNode = mNode->createChildSceneNode();
 	barrelNode->attachObject(ent);
-	barrelNode->setScale(25, 25, 25);
+	barrelNode->setScale(15, 20, 15);
 	ent->setMaterialName("Checker");
+
+	Real duration = 3;
+	Real desplazamiento = 50;
+	Animation* anim = mSM->createAnimation("animVV", duration);
+	NodeAnimationTrack* track = anim->createNodeTrack(0);
+	track->setAssociatedNode(mNode);
+	// Keyframe 0 origen
+	Vector3 keyFramePos(-10, 0, 100);
+	Vector3 src(0, 0, 1);
+	Real durPaso = duration / 4;
+	TransformKeyFrame* kf = track->createNodeKeyFrame(0);
+	kf->setTranslate(keyFramePos);
+
+	// Keyframe 1 arriba 
+	keyFramePos = Vector3(-10, desplazamiento, 100);
+	kf = track->createNodeKeyFrame(durPaso);
+	kf->setTranslate(keyFramePos);
+	kf->setRotation(src.getRotationTo(Vector3(1, 0, 1)));
+
+	// Keyframe 2 origen
+	keyFramePos = Vector3(-10, 0, 100);
+	kf = track->createNodeKeyFrame(durPaso * 2);
+	kf->setTranslate(keyFramePos);
+
+	// Keyframe 3 abajo
+	keyFramePos = Vector3(-10, -desplazamiento, 100);
+	kf = track->createNodeKeyFrame(durPaso * 3);
+	kf->setTranslate(keyFramePos);
+	kf->setRotation(src.getRotationTo(Vector3(-1, 0, 1)));
+
+	// Keyframe 4 origen
+	keyFramePos = Vector3(-10, 0, 100);
+	kf = track->createNodeKeyFrame(durPaso * 4);
+	kf->setTranslate(keyFramePos);
+
+	animState = mSM->createAnimationState("animVV");
+	animState->setLoop(true);
+	animState->setEnabled(true);
+}
+
+void Bomba::frameRendered(const Ogre::FrameEvent& evt)
+{
+	if(moving)
+		animState->addTime(evt.timeSinceLastFrame);
+}
+
+void Bomba::receiveEvent(MessageType msg, EntidadIG* entidad)
+{
+	if (msg == KEY_T)
+		moving = false;
 }

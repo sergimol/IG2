@@ -130,13 +130,13 @@ void IG2App::setupScene(void)
 
 	Light* luz = mSM->createLight("Luz");
 	luz->setType(Ogre::Light::LT_DIRECTIONAL);
-	luz->setDiffuseColour(0.75, 0.75, 0.75);
+	luz->setDiffuseColour(1, 1, 1);
 
 	mLightNode = mSM->getRootSceneNode()->createChildSceneNode("nLuz");
 	//mLightNode = mCamNode->createChildSceneNode("nLuz");
 	mLightNode->attachObject(luz);
 
-	mLightNode->setDirection(Ogre::Vector3(0, -1, -1));  //vec3.normalise();
+	mLightNode->setDirection(Ogre::Vector3(-1, -1, -1));  //vec3.normalise();
 	//mLightNode->setPosition(0, 0, 1000);
 
 	//------------------------------------------------------------------------
@@ -178,18 +178,24 @@ void IG2App::setupScene(void)
 	EntidadIG::addListener(avionObj);
 	avionNode->translate(0, 550, 0);*/
 
-	planoNode = mSM->getRootSceneNode()->createChildSceneNode();
-	plano = new Plano(planoNode, 1080, 800, 100, 80);
+	rioNode = mSM->getRootSceneNode()->createChildSceneNode();
+	rio = new Plano(rioNode, 1080, 800, 100, 80, "Water", Vector3(0, 0, 0));
+
+	plataformaRNode = mSM->getRootSceneNode()->createChildSceneNode();
+	plataformaR = new Plano(rioNode, 360, 800 / 3, 100, 80, "Rojo", Vector3(360, 1, -800 / 3));
+
+	plataformaANode = mSM->getRootSceneNode()->createChildSceneNode();
+	plataformaA = new Plano(rioNode, 360, 800 / 3, 100, 80, "Amarillo", Vector3(-360, 1, 800 / 3));
 
 	sinbadFicticio = mSM->getRootSceneNode()->createChildSceneNode();
 	sinbadNode = sinbadFicticio->createChildSceneNode();
 	sinbad = new Sinbad(sinbadNode);
-	sinbadNode->translate(0, 625, 0);
+	sinbad->Arma();
+	sinbadNode->translate(-360, /*625*/100, 800 / 3);
 	EntidadIG::addListener(sinbad);
 
 	bombaNode = mSM->getRootSceneNode()->createChildSceneNode();
 	bomba = new Bomba(bombaNode);
-	bombaNode->translate(0, 625, 0);
 	EntidadIG::addListener(bomba);
 	//------------------------------------------------------------------------
 

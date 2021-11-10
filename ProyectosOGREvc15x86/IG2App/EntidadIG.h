@@ -3,15 +3,19 @@
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
 #include <OgreMeshManager.h>
+#include <OgreAnimation.h>
+#include <OgreKeyFrame.h>
 
 #include "IG2ApplicationContext.h"
 
-#include "vector"
+#include <vector>
+#include <string>
 
 using namespace Ogre;
+using namespace std;
 
 #pragma once
-enum MessageType { KEY_R, GAME_FINISH };
+enum MessageType { KEY_R, GAME_FINISH, KEY_T };
 class EntidadIG:public OgreBites::InputListener
 {
 public:
@@ -162,10 +166,13 @@ protected:
 
 class Plano : public EntidadIG {
 public:
-	Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg);
+	Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg, string material, Vector3 translation);
 	~Plano() {};
+	Timer myTimer();
 protected:
 	SceneNode* planoNode = nullptr;
+	virtual void receiveEvent(MessageType msg, EntidadIG* entidad);
+	virtual void frameRendered(const Ogre::FrameEvent& evt);
 };
 
 class Sinbad : public EntidadIG {
@@ -196,6 +203,10 @@ public:
 	Bomba(SceneNode* node);
 	~Bomba() {};
 
-private:
+protected:
 	SceneNode* barrelNode = nullptr;
+	AnimationState* animState = nullptr;
+	bool moving = true;
+	virtual void frameRendered(const Ogre::FrameEvent& evt);
+	virtual void receiveEvent(MessageType msg, EntidadIG* entidad);
 };
