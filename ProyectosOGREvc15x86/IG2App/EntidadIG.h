@@ -168,7 +168,7 @@ class Plano : public EntidadIG {
 public:
 	Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg, string material, Vector3 translation);
 	~Plano() {};
-	Timer myTimer();
+	Timer* myTimer = nullptr;
 protected:
 	SceneNode* planoNode = nullptr;
 	virtual void receiveEvent(MessageType msg, EntidadIG* entidad);

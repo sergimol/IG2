@@ -426,6 +426,23 @@ Plano::Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg, string materia
 	planoNode->translate(translation);
 }
 
+void Plano::receiveEvent(MessageType msg, EntidadIG* entidad)
+{
+	if (msg == KEY_T && myTimer == nullptr) {
+		myTimer = new Timer();
+	}
+}
+
+void Plano::frameRendered(const Ogre::FrameEvent& evt)
+{
+	if (myTimer != nullptr) {
+		if (myTimer->getMilliseconds() >= 5000) {
+			Entity* ent = static_cast<Ogre::Entity*>(planoNode->getAttachedObject(0));
+			ent->setMaterialName("Piedras");
+		}
+	}
+}
+
 Sinbad::Sinbad(SceneNode* node) : EntidadIG(node) {
 	//CUERPO
 	Ogre::Entity* ent = mSM->createEntity("Sinbad.mesh");

@@ -180,6 +180,7 @@ void IG2App::setupScene(void)
 
 	rioNode = mSM->getRootSceneNode()->createChildSceneNode();
 	rio = new Plano(rioNode, 1080, 800, 100, 80, "Water", Vector3(0, 0, 0));
+	EntidadIG::addListener(rio);
 
 	plataformaRNode = mSM->getRootSceneNode()->createChildSceneNode();
 	plataformaR = new Plano(rioNode, 360, 800 / 3, 100, 80, "Rojo", Vector3(360, 1, -800 / 3));
