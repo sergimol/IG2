@@ -5,6 +5,8 @@
 #include <OgreMeshManager.h>
 #include <OgreAnimation.h>
 #include <OgreKeyFrame.h>
+#include <OgreBillboardSet.h>
+#include <OgreParticleSystem.h>
 
 #include "IG2ApplicationContext.h"
 
@@ -149,12 +151,16 @@ protected:
 	SceneNode* frenteNode = nullptr;
 	SceneNode* pilotoNode = nullptr;
 	SceneNode* heliceINode = nullptr;
+	SceneNode* pointsNode = nullptr;
+	SceneNode* mPSNode = nullptr;
+	ParticleSystem* pSystem = nullptr;
 	AspasMolino* heliceIObj;
 	AspasMolino* heliceDObj;
 	SceneNode* heliceDNode = nullptr;
 	Light* foco = nullptr;
 	SceneNode* focoNode = nullptr;
 	Timer* myTimer = nullptr;
+	BillboardSet* bbSet = nullptr;
 
 	bool rotating = false;
 	bool moving = true;
@@ -187,6 +193,7 @@ protected:
 	AnimationState* baseState = nullptr;
 	AnimationState* topState = nullptr;
 	AnimationState* danceState = nullptr;
+	AnimationState* animState = nullptr;
 	bool rotating = false;
 	bool dancing = false;
 	Timer* myTimer = nullptr;

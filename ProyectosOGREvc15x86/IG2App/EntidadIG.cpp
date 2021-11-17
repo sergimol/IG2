@@ -349,6 +349,19 @@ Avion::Avion(SceneNode* node) : EntidadIG(node)
 	focoNode->attachObject(foco);
 	focoNode->setDirection(Vector3(0, -1, 0));
 
+	pointsNode = mNode->createChildSceneNode();
+	pointsNode->translate(0, 0, -75);
+	bbSet = mSM->createBillboardSet("10points", 1);
+	bbSet->setDefaultDimensions(50, 50);
+	bbSet->setMaterialName("10points");
+	pointsNode->attachObject(bbSet);
+	Billboard* bb = bbSet->createBillboard(Vector3(0, 0, 0));
+
+	mPSNode = mNode->createChildSceneNode();
+	mPSNode->translate(0, 0, -100);
+	pSystem = mSM->createParticleSystem("psSmoke", "IG2App/Smoke");
+	pSystem->setEmitting(true);
+	mPSNode->attachObject(pSystem);
 	myTimer = new Timer();
 }
 
@@ -378,9 +391,9 @@ bool Avion::keyPressed(const OgreBites::KeyboardEvent& evt)
 
 void Avion::frameRendered(const Ogre::FrameEvent& evt)
 {
-	/*Ogre::Real time = evt.timeSinceLastFrame;
+	Ogre::Real time = evt.timeSinceLastFrame;
 	if (moving) {
-		if (!rotating) {
+		/*if (!rotating) {
 			unsigned long a = myTimer->getMilliseconds();
 			if (a >= 2000) {
 				rotationDir = rand() % 2;
@@ -401,8 +414,9 @@ void Avion::frameRendered(const Ogre::FrameEvent& evt)
 			else {
 				mNode->getParent()->yaw(Degree(rotationDir * 50 * time));
 			}
-		}
-	}*/
+		}*/
+		mNode->getParent()->yaw(Degree(-50 * time));
+	}
 	heliceDObj->frameRendered(evt, 0);
 	heliceIObj->frameRendered(evt, 0);
 }
@@ -465,6 +479,52 @@ Sinbad::Sinbad(SceneNode* node) : EntidadIG(node) {
 	danceState->setEnabled(false);
 	danceState->setLoop(true);
 
+	Real duration = 12;
+	Real desplazamiento = 50;
+	Animation* anim = mSM->createAnimation("animSimbad", duration);
+	NodeAnimationTrack* track = anim->createNodeTrack(0);
+	track->setAssociatedNode(mNode);
+	// Keyframe 0 mirando z positiva
+	Vector3 keyFramePos(-360, 100, 800 / 3);
+	Vector3 src(0, 0, 1);
+	Real durPaso = duration / 6;
+	TransformKeyFrame* kf = track->createNodeKeyFrame(0);
+	kf->setTranslate(keyFramePos);
+	kf->setRotation(src.getRotationTo(Vector3(0, 0, 1)));
+
+	// Keyframe 1 mirando plataforma roja
+	kf = track->createNodeKeyFrame(durPaso);
+	kf->setTranslate(keyFramePos);
+	kf->setRotation(src.getRotationTo(Vector3(1, 0, -1)));
+
+	// Keyframe 2 en plataforma roja
+	keyFramePos = Vector3(360, 100, -800 / 3);
+	kf = track->createNodeKeyFrame(durPaso * 2);
+	kf->setTranslate(keyFramePos);
+	kf->setRotation(src.getRotationTo(Vector3(1, 0, -1)));
+
+	// Keyframe 3 mirando plataforma amrilla
+	keyFramePos = Vector3(360, 100, -800 / 3);
+	kf = track->createNodeKeyFrame(durPaso * 3);
+	kf->setTranslate(keyFramePos);
+	kf->setRotation(src.getRotationTo(Vector3(-1, 0, 1)));
+
+	// Keyframe 4 en plataforma amarilla
+	keyFramePos = Vector3(-360, 100, 800 / 3);
+	kf = track->createNodeKeyFrame(durPaso * 4);
+	kf->setTranslate(keyFramePos);
+	kf->setRotation(src.getRotationTo(Vector3(-1, 0, 1)));
+
+	// Keyframe 5 mirando z positiva
+	keyFramePos = Vector3(-360, 100, 800 / 3);
+	kf = track->createNodeKeyFrame(durPaso * 5);
+	kf->setTranslate(keyFramePos);
+	kf->setRotation(src.getRotationTo(Vector3(0, 0, 1)));
+
+	animState = mSM->createAnimationState("animSimbad");
+	animState->setLoop(true);
+	animState->setEnabled(true);
+
 	myTimer = new Timer();
 	AnimationStateSet* aux = ent->getAllAnimationStates();
 	auto it = aux->getAnimationStateIterator().begin();
@@ -517,6 +577,7 @@ void Sinbad::frameRendered(const Ogre::FrameEvent& evt) {
 	if (!dancing) {
 		baseState->addTime(evt.timeSinceLastFrame);
 		topState->addTime(evt.timeSinceLastFrame);
+		animState->addTime(evt.timeSinceLastFrame);
 		/*Ogre::Real time = evt.timeSinceLastFrame;
 		if (!rotating) {
 			unsigned long a = myTimer->getMilliseconds();
@@ -574,31 +635,31 @@ Bomba::Bomba(SceneNode* node) : EntidadIG(node)
 	NodeAnimationTrack* track = anim->createNodeTrack(0);
 	track->setAssociatedNode(mNode);
 	// Keyframe 0 origen
-	Vector3 keyFramePos(-10, 0, 100);
+	Vector3 keyFramePos(0, 0, 0);
 	Vector3 src(0, 0, 1);
 	Real durPaso = duration / 4;
 	TransformKeyFrame* kf = track->createNodeKeyFrame(0);
 	kf->setTranslate(keyFramePos);
 
 	// Keyframe 1 arriba 
-	keyFramePos = Vector3(-10, desplazamiento, 100);
+	keyFramePos = Vector3(0, desplazamiento, 0);
 	kf = track->createNodeKeyFrame(durPaso);
 	kf->setTranslate(keyFramePos);
 	kf->setRotation(src.getRotationTo(Vector3(1, 0, 1)));
 
 	// Keyframe 2 origen
-	keyFramePos = Vector3(-10, 0, 100);
+	keyFramePos = Vector3(0, 0, 0);
 	kf = track->createNodeKeyFrame(durPaso * 2);
 	kf->setTranslate(keyFramePos);
 
 	// Keyframe 3 abajo
-	keyFramePos = Vector3(-10, -desplazamiento, 100);
+	keyFramePos = Vector3(0, -desplazamiento, 0);
 	kf = track->createNodeKeyFrame(durPaso * 3);
 	kf->setTranslate(keyFramePos);
 	kf->setRotation(src.getRotationTo(Vector3(-1, 0, 1)));
 
 	// Keyframe 4 origen
-	keyFramePos = Vector3(-10, 0, 100);
+	keyFramePos = Vector3(0, 0, 0);
 	kf = track->createNodeKeyFrame(durPaso * 4);
 	kf->setTranslate(keyFramePos);
 

@@ -122,7 +122,7 @@ void IG2App::setupScene(void)
 
 	// and tell it to render into the main window
 	Viewport* vp = getRenderWindow()->addViewport(cam);
-	vp->setBackgroundColour(Ogre::ColourValue(0.7, 0.8, 0.9));
+	vp->setBackgroundColour(Ogre::ColourValue(0.6, 0.7, 0.8));
 
 	//------------------------------------------------------------------------
 
@@ -132,8 +132,8 @@ void IG2App::setupScene(void)
 	luz->setType(Ogre::Light::LT_DIRECTIONAL);
 	luz->setDiffuseColour(1, 1, 1);
 
-	mLightNode = mSM->getRootSceneNode()->createChildSceneNode("nLuz");
-	//mLightNode = mCamNode->createChildSceneNode("nLuz");
+	//mLightNode = mSM->getRootSceneNode()->createChildSceneNode("nLuz");
+	mLightNode = mCamNode->createChildSceneNode("nLuz");
 	mLightNode->attachObject(luz);
 
 	mLightNode->setDirection(Ogre::Vector3(-1, -1, -1));  //vec3.normalise();
@@ -144,11 +144,12 @@ void IG2App::setupScene(void)
 	// finally something to render
 	 /* mClockNode = mSM->getRootSceneNode()->createChildSceneNode("Clock");
 	 setupHours();*/
-	/*Ogre::Entity* ent = mSM->createEntity("sphere.mesh");
+	Ogre::Entity* ent = mSM->createEntity("sphere.mesh");
 	planetaNode = mSM->getRootSceneNode()->createChildSceneNode("Planeta");
 	planetaNode->attachObject(ent);
-	planetaNode->scale(5, 5, 5);*/
-	/*ent->setMaterialName("Carlosbolon");*/
+	planetaNode->scale(0.25, 0.25, 0.25);
+	planetaNode->translate(360, 0, -800 / 3);
+	ent->setMaterialName("Cursed");
 
 	/*ficticioDronNode = mSM->getRootSceneNode()->createChildSceneNode("Dron ficticio");
 	nodoDron = ficticioDronNode->createChildSceneNode("Dron");
@@ -172,11 +173,12 @@ void IG2App::setupScene(void)
 	}*/
 
 	//AVION
-	/*avionFicticio = mSM->getRootSceneNode()->createChildSceneNode();
+	avionFicticio = mSM->getRootSceneNode()->createChildSceneNode();
 	avionNode = avionFicticio->createChildSceneNode();
 	avionObj = new Avion(avionNode);
 	EntidadIG::addListener(avionObj);
-	avionNode->translate(0, 550, 0);*/
+	avionFicticio->translate(0, 400, 0);
+	avionNode->translate(300, 0, 0);
 
 	rioNode = mSM->getRootSceneNode()->createChildSceneNode();
 	rio = new Plano(rioNode, 1080, 800, 100, 80, "Water", Vector3(0, 0, 0));
@@ -192,7 +194,7 @@ void IG2App::setupScene(void)
 	sinbadNode = sinbadFicticio->createChildSceneNode();
 	sinbad = new Sinbad(sinbadNode);
 	sinbad->Arma();
-	sinbadNode->translate(-360, /*625*/100, 800 / 3);
+	sinbadNode->translate(-360, 100, 800 / 3);
 	EntidadIG::addListener(sinbad);
 
 	bombaNode = mSM->getRootSceneNode()->createChildSceneNode();

@@ -145,3 +145,37 @@ material Piedras
 		}
 	}
 }
+
+material 10points
+{
+	technique // al menos una
+	{
+		pass // al menos uno
+		{
+			lighting off
+			texture_unit {
+				texture 10points.png
+				tex_adress_mode clamp
+			}
+		}
+	}
+}
+
+material IG2App/Smoke
+{
+	technique // al menos una
+	{
+		pass // al menos uno
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_write off 
+			diffuse vertexcolour
+			
+			texture_unit {
+				texture smoke.png
+				tex_adress_mode clamp
+			}
+		}
+	}
+}
