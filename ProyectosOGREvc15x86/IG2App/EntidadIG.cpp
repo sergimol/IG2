@@ -359,7 +359,7 @@ Avion::Avion(SceneNode* node) : EntidadIG(node)
 
 	mPSNode = mNode->createChildSceneNode();
 	mPSNode->translate(0, 0, -100);
-	pSystem = mSM->createParticleSystem("psSmoke", "IG2App/Smoke");
+	pSystem = mSM->createParticleSystem("psSmoke", "Estela");
 	pSystem->setEmitting(true);
 	mPSNode->attachObject(pSystem);
 	myTimer = new Timer();

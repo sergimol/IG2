@@ -1,21 +1,109 @@
-particle_system IG2App/Smoke
+particle_system Estela
 { // p. s. attributes
 	renderer billboard
 	billboard_type point
-	particle_width 35
-	particle_height 35
+	particle_width 40
+	particle_height 40
+	quota 500 //numero maximo de particulas que puede haber en la escena (cuando se eliminan se vuelven a generar)
+	material Smoke
+	
+	emitter Point
+	{ // e. attributes
+		direction 0 1 0
+		angle 35
+		emission_rate 15 //particulas que se generan por segundo
+		time_to_live 2
+		velocity_min 10
+		velocity_max 20
+		colour 0.7 0.7 0.7 0.5
+	}
+	
+	affector ColourFader
+	{
+		alpha -0.2 //decrementa en cada coordenada por segundo
+	}
+	
+	affector Rotator // the texture
+	{ // a. attributes
+		rotation_range_start 0
+		rotation_range_end 360
+		rotation_speed_range_start -60
+		rotation_speed_range_end 200
+	}
+	affector Scaler
+	{ // a. attributes
+		rate 30
+	}
+	affector DirectionRandomiser
+	{ // a. attributes
+		randomness 5
+	}
+}
+
+particle_system Explosion
+{ // p. s. attributes
+	renderer billboard
+	billboard_type point
+	particle_width 100
+	particle_height 100
+	quota 500 //numero maximo de particulas que puede haber en la escena (cuando se eliminan se vuelven a generar)
+	material Smoke
+	
+	emitter Point
+	{ // e. attributes
+		//direction 0 0 0 //no importa la direccion
+		angle 180 //0 en la misma direccion, 180 en todas las direcciones
+		emission_rate 10 //particulas que se generan por segundo
+		time_to_live 4
+		velocity_min 50
+		velocity_max 70
+		colour 0.3 0.3 0.3 0.5
+	}
+	
+	affector ColourFader
+	{
+		alpha -0.1 //decrementa en cada coordenada por segundo
+		red 0.08
+		blue 0.08
+		green 0.08
+	}
+	
+	affector Rotator // the texture
+	{ // a. attributes
+		rotation_range_start 0
+		rotation_range_end 360
+		rotation_speed_range_start -60
+		rotation_speed_range_end 200
+	}
+	affector Scaler
+	{ // a. attributes
+		rate 100
+	}
+	affector DirectionRandomiser
+	{ // a. attributes
+		randomness 5
+	}
+}
+
+particle_system ExplosionBomba
+{ // p. s. attributes
+	renderer billboard
+	billboard_type point
+	particle_width 80
+	particle_height 80
 	quota 500
-	material IG2App/Smoke
+	material Smoke
 	
 	emitter Point
 	{ // e. attributes
 		direction 0 1 0
 		angle 35
 		emission_rate 15
-		time_to_live 4
-		velocity_min 50
-		velocity_max 80
+		time_to_live 8
+		velocity_min 80
+		velocity_max 110
 	}
+	
 	affector ColourImage
 	{ // a. attributes
 		image smokecolors.png
