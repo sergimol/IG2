@@ -197,6 +197,19 @@ void IG2App::setupScene(void)
 	sinbadNode->translate(-360, 100, 800 / 3);
 	EntidadIG::addListener(sinbad);
 
+	// Niebla
+	nieblaNode = mSM->getRootSceneNode()->createChildSceneNode();
+	niebla = mSM->createBillboardSet("niebla", 6);
+	niebla->setDefaultDimensions(400, 400);
+	niebla->setMaterialName("Smoke");
+	nieblaNode->attachObject(niebla);
+	nieblaNode->translate(300, 200, 0);
+	Billboard* bb = niebla->createBillboard(Vector3(-100, 0, 50));
+	bb = niebla->createBillboard(Vector3(100, 0, 50));
+	bb = niebla->createBillboard(Vector3(-100, 0, -50));
+	bb = niebla->createBillboard(Vector3(100, 0, -50));
+	bb = niebla->createBillboard(Vector3(0, 0, 0));
+
 	bombaNode = mSM->getRootSceneNode()->createChildSceneNode();
 	bomba = new Bomba(bombaNode);
 	EntidadIG::addListener(bomba);

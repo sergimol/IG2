@@ -12,7 +12,7 @@ EntidadIG::EntidadIG(SceneNode* node)
 //Destructora 
 EntidadIG::~EntidadIG()
 {
-	
+
 }
 
 
@@ -273,7 +273,7 @@ void Dron::receiveEvent(MessageType msg, EntidadIG* e) {
 	switch (msg)
 	{
 	case KEY_R:
-		moving = !moving;		
+		moving = !moving;
 		ent->setMaterialName("Rojo");
 		break;
 	case GAME_FINISH:
@@ -362,6 +362,11 @@ Avion::Avion(SceneNode* node) : EntidadIG(node)
 	pSystem = mSM->createParticleSystem("psSmoke", "Estela");
 	pSystem->setEmitting(true);
 	mPSNode->attachObject(pSystem);
+
+	explosionSystem = mSM->createParticleSystem("explosion", "Explosion");
+	explosionSystem->setEmitting(false);
+	mPSNode->attachObject(explosionSystem);
+
 	myTimer = new Timer();
 }
 
@@ -372,18 +377,30 @@ bool Avion::keyPressed(const OgreBites::KeyboardEvent& evt)
 		heliceIObj->keyPressed(evt, 0);
 	}
 	else if (evt.keysym.sym == SDLK_r) {
-		moving = !moving;
+		/*moving = !moving;
 		Entity* ent = static_cast<Ogre::Entity*>(alaDNode->getAttachedObject(0));
 		ent->setMaterialName("Rojo");
 		ent = static_cast<Ogre::Entity*>(alaINode->getAttachedObject(0));
 		ent->setMaterialName("Rojo");
-		sendEvent(KEY_R, this);
+		sendEvent(KEY_R, this);*/
+
+		pSystem->setEmitting(false);
+		explosionSystem->setEmitting(true);
+		moving = false;
+		myTimer->reset();
+
+		sendEvent(EXPLOSION, nullptr);
+
+		Ogre::Node::ChildNodeMap m = mNode->getChildren();
+		for (int i = 0; i < m.size() - 1; ++i)
+			dynamic_cast<SceneNode*>(m[i])->setVisible(false);
+
 	}
-	else if (evt.keysym.sym == SDLK_h) 
+	else if (evt.keysym.sym == SDLK_h)
 		mNode->getParent()->pitch(Degree(1));
-	else if(evt.keysym.sym == SDLK_a)
+	else if (evt.keysym.sym == SDLK_a)
 		mNode->getParent()->yaw(Degree(1));
-	else if(evt.keysym.sym == SDLK_d)
+	else if (evt.keysym.sym == SDLK_d)
 		mNode->getParent()->yaw(Degree(-1));
 
 	return true;
@@ -417,6 +434,9 @@ void Avion::frameRendered(const Ogre::FrameEvent& evt)
 		}*/
 		mNode->getParent()->yaw(Degree(-50 * time));
 	}
+	else if (myTimer->getMilliseconds() >= 500)
+		explosionSystem->setEmitting(false);
+
 	heliceDObj->frameRendered(evt, 0);
 	heliceIObj->frameRendered(evt, 0);
 }
@@ -468,7 +488,7 @@ Sinbad::Sinbad(SceneNode* node) : EntidadIG(node) {
 
 	baseState->setEnabled(true);
 	baseState->setLoop(true);
-	
+
 	topState = ent->getAnimationState("RunTop");
 
 	topState->setEnabled(true);
@@ -603,6 +623,10 @@ void Sinbad::frameRendered(const Ogre::FrameEvent& evt) {
 	else {
 		danceState->addTime(evt.timeSinceLastFrame);
 	}
+
+
+	if (!alive && myTimer->getMilliseconds() >= 5000)
+		sendEvent(DEAD, nullptr);
 }
 
 bool Sinbad::keyPressed(const OgreBites::KeyboardEvent& evt)
@@ -619,6 +643,28 @@ bool Sinbad::keyPressed(const OgreBites::KeyboardEvent& evt)
 		}
 	}
 	return true;
+}
+
+void Sinbad::receiveEvent(MessageType msg, EntidadIG* entidad)
+{
+	if (msg == EXPLOSION) {
+		mNode->pitch(Degree(-90));
+		mNode->translate(0, -90, 0);
+		alive = false;
+		Entity* ent = static_cast<Ogre::Entity*>(sinbadNode->getAttachedObject(0));
+
+		animState->setEnabled(false);
+
+		baseState = ent->getAnimationState("IdleBase");
+		baseState->setEnabled(true);
+		baseState->setLoop(true);
+
+		topState = ent->getAnimationState("IdleTop");
+		topState->setEnabled(true);
+		topState->setLoop(true);
+
+		myTimer->reset();
+	}
 }
 
 Bomba::Bomba(SceneNode* node) : EntidadIG(node)
@@ -666,11 +712,16 @@ Bomba::Bomba(SceneNode* node) : EntidadIG(node)
 	animState = mSM->createAnimationState("animVV");
 	animState->setLoop(true);
 	animState->setEnabled(true);
+
+	explosionNode = mNode->createChildSceneNode();
+	explosionSystem = mSM->createParticleSystem("bombaExplosion", "ExplosionBomba");
+	explosionSystem->setEmitting(false);
+	explosionNode->attachObject(explosionSystem);
 }
 
 void Bomba::frameRendered(const Ogre::FrameEvent& evt)
 {
-	if(moving)
+	if (moving)
 		animState->addTime(evt.timeSinceLastFrame);
 }
 
@@ -678,4 +729,10 @@ void Bomba::receiveEvent(MessageType msg, EntidadIG* entidad)
 {
 	if (msg == KEY_T)
 		moving = false;
+	else if (msg == DEAD) {
+		explosionSystem->setEmitting(true);
+		moving = false;
+		animState->setTimePosition(0);
+		barrelNode->setVisible(false);
+	}
 }

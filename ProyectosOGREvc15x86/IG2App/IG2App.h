@@ -50,10 +50,12 @@ protected:
   SceneNode* bombaNode = nullptr;
   SceneNode* plataformaRNode = nullptr;
   SceneNode* plataformaANode = nullptr;
+  SceneNode* nieblaNode = nullptr;
   Bomba* bomba = nullptr;
   Plano* rio = nullptr;
   Plano* plataformaR = nullptr;
   Plano* plataformaA = nullptr;
+  BillboardSet* niebla = nullptr;
   std::vector<std::pair<SceneNode*, Dron*>> microDrones;
   Sinbad* sinbad = nullptr;
   SceneNode* sinbadNode = nullptr;

@@ -17,7 +17,7 @@ using namespace Ogre;
 using namespace std;
 
 #pragma once
-enum MessageType { KEY_R, GAME_FINISH, KEY_T };
+enum MessageType { KEY_R, GAME_FINISH, KEY_T, EXPLOSION, DEAD };
 class EntidadIG:public OgreBites::InputListener
 {
 public:
@@ -154,6 +154,7 @@ protected:
 	SceneNode* pointsNode = nullptr;
 	SceneNode* mPSNode = nullptr;
 	ParticleSystem* pSystem = nullptr;
+	ParticleSystem* explosionSystem = nullptr;
 	AspasMolino* heliceIObj;
 	AspasMolino* heliceDObj;
 	SceneNode* heliceDNode = nullptr;
@@ -196,6 +197,7 @@ protected:
 	AnimationState* animState = nullptr;
 	bool rotating = false;
 	bool dancing = false;
+	bool alive = true;
 	Timer* myTimer = nullptr;
 	int rotationDir;
 	bool derechaEspada = false;
@@ -203,6 +205,7 @@ protected:
 
 	virtual void frameRendered(const Ogre::FrameEvent& evt);
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
+	virtual void receiveEvent(MessageType msg, EntidadIG* entidad);
 };
 
 class Bomba : public EntidadIG {
@@ -213,6 +216,8 @@ public:
 protected:
 	SceneNode* barrelNode = nullptr;
 	AnimationState* animState = nullptr;
+	ParticleSystem* explosionSystem = nullptr;
+	SceneNode* explosionNode = nullptr;
 	bool moving = true;
 	virtual void frameRendered(const Ogre::FrameEvent& evt);
 	virtual void receiveEvent(MessageType msg, EntidadIG* entidad);
