@@ -4,6 +4,7 @@
 #include <OgreInput.h>
 #include <SDL_keycode.h>
 #include <OgreMeshManager.h>
+#include <OGRE/Bites/OgreBitesConfigDialog.h>
 
 using namespace Ogre;
 
@@ -112,6 +113,12 @@ void IG2App::setupScene(void)
 	cam->setFarClipDistance(10000);
 	cam->setAutoAspectRatio(true);
 	//cam->setPolygonMode(Ogre::PM_WIREFRAME); 
+	
+	// Cámara para reflejos
+	Camera* camRef = mSM->createCamera("RefCam");
+	camRef->setNearClipDistance(1);
+	camRef->setFarClipDistance(10000);
+	camRef->setAutoAspectRatio(true);
 
 	mCamNode = mSM->getRootSceneNode()->createChildSceneNode("nCam");
 	mCamNode->attachObject(cam);
@@ -122,7 +129,7 @@ void IG2App::setupScene(void)
 
 	// and tell it to render into the main window
 	Viewport* vp = getRenderWindow()->addViewport(cam);
-	vp->setBackgroundColour(Ogre::ColourValue(0.6, 0.7, 0.8));
+	vp->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
 
 	//------------------------------------------------------------------------
 
@@ -136,7 +143,7 @@ void IG2App::setupScene(void)
 	mLightNode = mCamNode->createChildSceneNode("nLuz");
 	mLightNode->attachObject(luz);
 
-	mLightNode->setDirection(Ogre::Vector3(-1, -1, -1));  //vec3.normalise();
+	mLightNode->setDirection(Ogre::Vector3(0, -1, -1));  //vec3.normalise();
 	//mLightNode->setPosition(0, 0, 1000);
 
 	//------------------------------------------------------------------------
@@ -144,33 +151,17 @@ void IG2App::setupScene(void)
 	// finally something to render
 	 /* mClockNode = mSM->getRootSceneNode()->createChildSceneNode("Clock");
 	 setupHours();*/
+
+	mSM->setSkyPlane(true, Plane(Vector3::UNIT_Z, -100),	"Space"
+		, 1, 1, true, 1.0, 100, 100);
+
+	MovablePlane* mpRef = new MovablePlane();
 	Ogre::Entity* ent = mSM->createEntity("sphere.mesh");
 	planetaNode = mSM->getRootSceneNode()->createChildSceneNode("Planeta");
 	planetaNode->attachObject(ent);
 	planetaNode->scale(0.25, 0.25, 0.25);
 	planetaNode->translate(360, 0, -800 / 3);
 	ent->setMaterialName("Cursed");
-
-	/*ficticioDronNode = mSM->getRootSceneNode()->createChildSceneNode("Dron ficticio");
-	nodoDron = ficticioDronNode->createChildSceneNode("Dron");
-	dron = new Dron(nodoDron, 3, 5, true);
-	nodoDron->scale(0.1, 0.1, 0.1);
-	nodoDron->translate(0, 550, 0);
-	EntidadIG::addListener(dron);*/
-
-	/*for (int i = 0; i < 50; ++i) {
-		SceneNode* ficticio = mSM->getRootSceneNode()->createChildSceneNode();
-		SceneNode* nodo = ficticio->createChildSceneNode();
-		Dron* d = new Dron(nodo, 3, 5, false);
-		nodo->scale(0.05, 0.05, 0.05);
-		nodo->translate(0, 550, 0);
-		int r = rand() % 360;
-		ficticio->yaw(Degree(r));
-		r = rand() % 360;
-		ficticio->pitch(Degree(r));
-		EntidadIG::addListener(d);
-		microDrones.push_back(std::make_pair(nodo, d));
-	}*/
 
 	//AVION
 	avionFicticio = mSM->getRootSceneNode()->createChildSceneNode();
@@ -184,9 +175,6 @@ void IG2App::setupScene(void)
 	rio = new Plano(rioNode, 1080, 800, 100, 80, "Water", Vector3(0, 0, 0));
 	EntidadIG::addListener(rio);
 
-	plataformaRNode = mSM->getRootSceneNode()->createChildSceneNode();
-	plataformaR = new Plano(rioNode, 360, 800 / 3, 100, 80, "Rojo", Vector3(360, 1, -800 / 3));
-
 	plataformaANode = mSM->getRootSceneNode()->createChildSceneNode();
 	plataformaA = new Plano(rioNode, 360, 800 / 3, 100, 80, "Amarillo", Vector3(-360, 1, 800 / 3));
 
@@ -196,19 +184,6 @@ void IG2App::setupScene(void)
 	sinbad->Arma();
 	sinbadNode->translate(-360, 100, 800 / 3);
 	EntidadIG::addListener(sinbad);
-
-	// Niebla
-	nieblaNode = mSM->getRootSceneNode()->createChildSceneNode();
-	niebla = mSM->createBillboardSet("niebla", 6);
-	niebla->setDefaultDimensions(400, 400);
-	niebla->setMaterialName("Smoke");
-	nieblaNode->attachObject(niebla);
-	nieblaNode->translate(300, 200, 0);
-	Billboard* bb = niebla->createBillboard(Vector3(-100, 0, 50));
-	bb = niebla->createBillboard(Vector3(100, 0, 50));
-	bb = niebla->createBillboard(Vector3(-100, 0, -50));
-	bb = niebla->createBillboard(Vector3(100, 0, -50));
-	bb = niebla->createBillboard(Vector3(0, 0, 0));
 
 	bombaNode = mSM->getRootSceneNode()->createChildSceneNode();
 	bomba = new Bomba(bombaNode);

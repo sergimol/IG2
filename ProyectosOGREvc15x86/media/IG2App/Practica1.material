@@ -182,3 +182,25 @@ material Smoke
 		}
 	}
 }
+
+material Space
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			texture_unit
+			{
+				texture lightMap.jpg
+				colour_op modulate
+			}
+			texture_unit
+			{
+				texture spaceSky.jpg
+				colour_op modulate
+				rotate_anim 0.01
+			}
+		}
+	}
+}

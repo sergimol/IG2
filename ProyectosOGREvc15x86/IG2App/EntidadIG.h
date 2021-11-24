@@ -158,8 +158,8 @@ protected:
 	AspasMolino* heliceIObj;
 	AspasMolino* heliceDObj;
 	SceneNode* heliceDNode = nullptr;
-	Light* foco = nullptr;
-	SceneNode* focoNode = nullptr;
+	//Light* foco = nullptr;
+	//SceneNode* focoNode = nullptr;
 	Timer* myTimer = nullptr;
 	BillboardSet* bbSet = nullptr;
 
