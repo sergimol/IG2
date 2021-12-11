@@ -7,6 +7,12 @@
 #include <OgreKeyFrame.h>
 #include <OgreBillboardSet.h>
 #include <OgreParticleSystem.h>
+#include <OgreMovablePlane.h>
+#include <OgreTextureManager.h>
+#include <OgreHardwarePixelBuffer.h>
+#include <OgreRenderTexture.h>
+#include <OgreSubEntity.h>
+#include <OgreTechnique.h>
 
 #include "IG2ApplicationContext.h"
 
@@ -173,13 +179,22 @@ protected:
 
 class Plano : public EntidadIG {
 public:
-	Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg, string material, Vector3 translation);
+	Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg, string material, Vector3 translation, Vector3 n);
 	~Plano() {};
 	Timer* myTimer = nullptr;
 protected:
 	SceneNode* planoNode = nullptr;
+	SceneNode* espejoNode = nullptr;
 	virtual void receiveEvent(MessageType msg, EntidadIG* entidad);
 	virtual void frameRendered(const Ogre::FrameEvent& evt);
+	void setReflejo(Camera* camRef);
+	Real width;
+	Real height;
+	int xSeg;
+	int ySeg;
+	string material;
+	Vector3 translation;
+	Vector3 normal;
 };
 
 class Sinbad : public EntidadIG {

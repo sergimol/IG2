@@ -432,12 +432,13 @@ void Avion::frameRendered(const Ogre::FrameEvent& evt)
 	heliceIObj->frameRendered(evt, 0);
 }
 
-Plano::Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg, string material, Vector3 translation) : EntidadIG(node) {
+Plano::Plano(SceneNode* node, Real w, Real h, int x, int y, string mat, Vector3 trans, Vector3 n) : EntidadIG(node), width(w), height(h),
+xSeg(x), ySeg(y), material(mat), translation(trans), normal(n) {
 	//PLANO
   //Crear la malla del plano
 	MeshManager::getSingleton().createPlane("mPlane1080x800" + material, //nombre
 		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,    //grupo de recursos utilizados
-		Plane(Vector3::UNIT_Y, 0),							//orientacion del plano
+		Plane(normal, 0),							//orientacion del plano
 		w, h,											//dimensiones 1080 x 800
 		xSeg, ySeg,												//divisiones de la malla 100 x 80
 		true,													//creacion de normales 
@@ -466,6 +467,53 @@ void Plano::frameRendered(const Ogre::FrameEvent& evt)
 			ent->setMaterialName("Piedras");
 		}
 	}
+}
+
+void Plano::setReflejo(Camera* camRef)
+{
+	//Crear la malla del plano
+	MeshManager::getSingleton().createPlane("reflejo" + material, //nombre
+		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,    //grupo de recursos utilizados
+		Plane(Vector3::UNIT_Y, 0),							//orientacion del plano
+		width, height,											//dimensiones 1080 x 800
+		xSeg, ySeg,												//divisiones de la malla 100 x 80
+		true,													//creacion de normales 
+		1, 1.0, 1.0,											//coordenadas de texturas con repeticion
+		Vector3::UNIT_Z);										//orientacion de la textura
+
+	//Cargamos la malla y inicializamos el nodo
+	Ogre::Entity* mirror = mSM->createEntity("reflejo" + material);
+	espejoNode = mNode->createChildSceneNode();
+	espejoNode->attachObject(mirror);
+	mirror->setMaterialName(material);
+	espejoNode->translate(translation);
+
+	MovablePlane* mpRef = new MovablePlane(normal, 0);
+	espejoNode->attachObject(mpRef);
+
+	camRef->enableReflection(mpRef);
+	camRef->enableCustomNearClipPlane(mpRef);
+
+	TexturePtr rttRef = TextureManager::getSingleton().createManual(
+		"rttReflejo", // ojo, nombre único -> (*)
+		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		TEX_TYPE_2D,
+		width, // ejemplo
+		height, // ejemplo
+		0, PF_R8G8B8, TU_RENDERTARGET);
+
+	RenderTexture* renderTexture = rttRef->getBuffer()->getRenderTarget();
+	Viewport* vpt = renderTexture->addViewport(camRef);
+	vpt->setClearEveryFrame(true);
+	vpt->setBackgroundColour(ColourValue::Black);
+
+	TextureUnitState* tu = mirror->getSubEntity(0)->getMaterial()->
+		getTechnique(0)->getPass(0)->createTextureUnitState("rttReflejo"); // <- (*)		
+	tu->setColourOperation(LBO_MODULATE); // black background
+	// LBO_ADD / LBO_ALPHA_BLEND / LBO_REPLACE
+	tu->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
+	tu->setProjectiveTexturing(true, camRef);
+
 }
 
 Sinbad::Sinbad(SceneNode* node) : EntidadIG(node) {

@@ -155,7 +155,6 @@ void IG2App::setupScene(void)
 	mSM->setSkyPlane(true, Plane(Vector3::UNIT_Z, -100),	"Space"
 		, 1, 1, true, 1.0, 100, 100);
 
-	MovablePlane* mpRef = new MovablePlane();
 	Ogre::Entity* ent = mSM->createEntity("sphere.mesh");
 	planetaNode = mSM->getRootSceneNode()->createChildSceneNode("Planeta");
 	planetaNode->attachObject(ent);
