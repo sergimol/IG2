@@ -122,6 +122,7 @@ void IG2App::setupScene(void)
 
 	mCamNode = mSM->getRootSceneNode()->createChildSceneNode("nCam");
 	mCamNode->attachObject(cam);
+	mCamNode->attachObject(camRef);
 
 	mCamNode->setPosition(0, 0, 1000);
 	mCamNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
@@ -171,11 +172,13 @@ void IG2App::setupScene(void)
 	avionNode->translate(300, 0, 0);
 
 	rioNode = mSM->getRootSceneNode()->createChildSceneNode();
-	rio = new Plano(rioNode, 1080, 800, 100, 80, "Water", Vector3(0, 0, 0));
+	rio = new Plano(rioNode, 1080, 800, 100, 80, "Water", Vector3(0, 0, 0), Vector3(0, 1, 0));
 	EntidadIG::addListener(rio);
+	//rio->setReflejo(camRef);
+	rio->setEspejo(camRef);
 
 	plataformaANode = mSM->getRootSceneNode()->createChildSceneNode();
-	plataformaA = new Plano(rioNode, 360, 800 / 3, 100, 80, "Amarillo", Vector3(-360, 1, 800 / 3));
+	plataformaA = new Plano(rioNode, 360, 800 / 3, 100, 80, "Amarillo", Vector3(-360, 1, 800 / 3), Vector3(0, 1, 0));
 
 	sinbadFicticio = mSM->getRootSceneNode()->createChildSceneNode();
 	sinbadNode = sinbadFicticio->createChildSceneNode();

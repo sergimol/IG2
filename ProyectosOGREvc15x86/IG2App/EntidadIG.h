@@ -182,12 +182,13 @@ public:
 	Plano(SceneNode* node, Real w, Real h, int xSeg, int ySeg, string material, Vector3 translation, Vector3 n);
 	~Plano() {};
 	Timer* myTimer = nullptr;
+	void setReflejo(Camera* camRef);
+	void setEspejo(Camera* camRef);
 protected:
 	SceneNode* planoNode = nullptr;
 	SceneNode* espejoNode = nullptr;
 	virtual void receiveEvent(MessageType msg, EntidadIG* entidad);
 	virtual void frameRendered(const Ogre::FrameEvent& evt);
-	void setReflejo(Camera* camRef);
 	Real width;
 	Real height;
 	int xSeg;

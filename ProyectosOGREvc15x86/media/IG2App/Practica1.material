@@ -204,3 +204,14 @@ material Space
 		}
 	}
 }
+
+material nada
+{
+	technique // al menos una
+	{
+		pass // al menos uno
+		{
+			diffuse 0 0 0
+		}
+	}
+}

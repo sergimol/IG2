@@ -474,7 +474,7 @@ void Plano::setReflejo(Camera* camRef)
 	//Crear la malla del plano
 	MeshManager::getSingleton().createPlane("reflejo" + material, //nombre
 		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,    //grupo de recursos utilizados
-		Plane(Vector3::UNIT_Y, 0),							//orientacion del plano
+		Plane(normal, 0),							//orientacion del plano
 		width, height,											//dimensiones 1080 x 800
 		xSeg, ySeg,												//divisiones de la malla 100 x 80
 		true,													//creacion de normales 
@@ -509,11 +509,57 @@ void Plano::setReflejo(Camera* camRef)
 
 	TextureUnitState* tu = mirror->getSubEntity(0)->getMaterial()->
 		getTechnique(0)->getPass(0)->createTextureUnitState("rttReflejo"); // <- (*)		
-	tu->setColourOperation(LBO_MODULATE); // black background
+	tu->setColourOperation(LBO_ADD); 
 	// LBO_ADD / LBO_ALPHA_BLEND / LBO_REPLACE
 	tu->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
 	tu->setProjectiveTexturing(true, camRef);
 
+}
+
+void Plano::setEspejo(Camera* camRef)
+{
+	//Crear la malla del plano
+	MeshManager::getSingleton().createPlane("espejo" + material, //nombre
+		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,    //grupo de recursos utilizados
+		Plane(Vector3::NEGATIVE_UNIT_X, -540),							//orientacion del plano
+		width, height,											//dimensiones 1080 x 800
+		xSeg, ySeg,												//divisiones de la malla 100 x 80
+		true,													//creacion de normales 
+		1, 1.0, 1.0,											//coordenadas de texturas con repeticion
+		Vector3::UNIT_Z);										//orientacion de la textura
+
+	//Cargamos la malla y inicializamos el nodo
+	Ogre::Entity* mirror = mSM->createEntity("espejo" + material);
+	espejoNode = mNode->createChildSceneNode();
+	espejoNode->attachObject(mirror);
+	mirror->setMaterialName("nada");
+	espejoNode->translate(translation);
+
+	MovablePlane* mpRef = new MovablePlane(Vector3::NEGATIVE_UNIT_X, -540);
+	espejoNode->attachObject(mpRef);
+
+	camRef->enableReflection(mpRef);
+	camRef->enableCustomNearClipPlane(mpRef);
+
+	TexturePtr rttRef = TextureManager::getSingleton().createManual(
+		"rttEspejo", // ojo, nombre único -> (*)
+		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		TEX_TYPE_2D,
+		width, // ejemplo
+		height, // ejemplo
+		0, PF_R8G8B8, TU_RENDERTARGET);
+
+	RenderTexture* renderTexture = rttRef->getBuffer()->getRenderTarget();
+	Viewport* vpt = renderTexture->addViewport(camRef);
+	vpt->setClearEveryFrame(true);
+	vpt->setBackgroundColour(ColourValue::Black);
+
+	TextureUnitState* tu = mirror->getSubEntity(0)->getMaterial()->
+		getTechnique(0)->getPass(0)->createTextureUnitState("rttEspejo"); // <- (*)		
+	tu->setColourOperation(LBO_ADD);
+	// LBO_ADD / LBO_ALPHA_BLEND / LBO_REPLACE
+	tu->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
+	tu->setProjectiveTexturing(true, camRef);
 }
 
 Sinbad::Sinbad(SceneNode* node) : EntidadIG(node) {
