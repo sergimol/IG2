@@ -758,7 +758,7 @@ Bomba::Bomba(SceneNode* node) : EntidadIG(node)
 	barrelNode = mNode->createChildSceneNode();
 	barrelNode->attachObject(ent);
 	barrelNode->setScale(0.5, 0.5, 0.5);
-	ent->setMaterialName("BombaTeselada");
+	ent->setMaterialName("HolesAndLighting");
 
 	Real duration = 3;
 	Real desplazamiento = 35;

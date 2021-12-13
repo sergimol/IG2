@@ -57,6 +57,44 @@ fragment_program SpaceZoomFS glsl
     }
 }
 
+fragment_program HolesFS glsl
+{
+    source HolesFS.glsl
+    default_params 
+    {  
+        param_named texturaS int 0
+        param_named texturaM int 1
+        param_named texturaC int 2
+    }
+}
+
+vertex_program HolesAndLightingVS glsl
+{
+    source HolesAndLightingVS.glsl
+    default_params 
+    {
+        param_named_auto modelViewProjMat worldviewproj_matrix
+        param_named_auto normalMat inverse_transpose_world_matrix
+    }
+}
+
+fragment_program HolesAndLightingFS glsl
+{
+    source HolesAndLightingFS.glsl
+    default_params 
+    {  
+        param_named texturaS int 0
+        param_named texturaM int 1
+        param_named texturaC int 2
+
+        param_named ocreSiena float3 0.72 0.57 0.35
+        param_named azulCeruleo float3 0.0 0.6 0.83
+
+        param_named_auto lightPosition light_position 0 
+        param_named_auto lightDiffuse light_diffuse_colour 0
+    }
+}
+
 material BombaTeselada {
 	technique {
 		pass {
@@ -123,6 +161,69 @@ material SpaceZoom
             texture_unit // unit 1
             {
                 texture spaceSky.jpg 2d
+            }
+        }
+    }
+}
+
+material Holes
+{
+    technique 
+    {
+        pass
+        {
+            cull_software none
+            cull_hardware none
+
+            vertex_program_ref BombaTeseladaVS
+            { // these brackets are for initialising params, if you define them as default_params this should be empty
+            }
+            fragment_program_ref HolesFS
+            { // these brackets are for initialising params, if you define them as default_params this should be empty
+            }
+            texture_unit // unit 0
+            {
+				texture BeachStones.jpg 2d
+            }
+            texture_unit // unit 1
+            {                
+                texture BumpyMetal.jpg 2d
+            }
+            texture_unit // unit 2
+            {
+                texture corrosion.jpg 2d
+            }
+        }
+    }
+}
+
+material HolesAndLighting
+{
+    technique 
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            
+            vertex_program_ref HolesAndLightingVS
+            { 
+            }
+            fragment_program_ref HolesAndLightingFS
+            { 
+            }
+            
+            texture_unit // unit 0
+            {             
+                texture BeachStones.jpg 2d   
+            }
+            texture_unit // unit 1
+            {
+				texture BumpyMetal.jpg 2d
+            }
+            texture_unit // unit 2
+            {
+                texture corrosion.jpg 2d
             }
         }
     }
