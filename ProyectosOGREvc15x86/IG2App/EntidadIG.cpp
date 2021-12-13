@@ -754,14 +754,14 @@ void Sinbad::receiveEvent(MessageType msg, EntidadIG* entidad)
 
 Bomba::Bomba(SceneNode* node) : EntidadIG(node)
 {
-	Ogre::Entity* ent = mSM->createEntity("Barrel.mesh");
+	Ogre::Entity* ent = mSM->createEntity("uv_sphere.mesh");
 	barrelNode = mNode->createChildSceneNode();
 	barrelNode->attachObject(ent);
-	barrelNode->setScale(15, 20, 15);
-	ent->setMaterialName("Checker");
+	barrelNode->setScale(0.5, 0.5, 0.5);
+	ent->setMaterialName("BombaTeselada");
 
 	Real duration = 3;
-	Real desplazamiento = 50;
+	Real desplazamiento = 35;
 	Animation* anim = mSM->createAnimation("animVV", duration);
 	NodeAnimationTrack* track = anim->createNodeTrack(0);
 	track->setAssociatedNode(mNode);

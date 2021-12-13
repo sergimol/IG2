@@ -153,7 +153,7 @@ void IG2App::setupScene(void)
 	 /* mClockNode = mSM->getRootSceneNode()->createChildSceneNode("Clock");
 	 setupHours();*/
 
-	mSM->setSkyPlane(true, Plane(Vector3::UNIT_Z, -100),	"Space"
+	mSM->setSkyPlane(true, Plane(Vector3::UNIT_Z, -100),	"SpaceZoom"
 		, 1, 1, true, 1.0, 100, 100);
 
 	Ogre::Entity* ent = mSM->createEntity("sphere.mesh");

@@ -1,0 +1,129 @@
+vertex_program BombaTeseladaVS glsl
+{ 
+	source BombaTeseladaVS.glsl
+	default_params{
+		param_named_auto modelViewProjMat worldviewproj_matrix
+	}
+}
+
+fragment_program BombaTeseladaFS glsl
+{ 
+	source BombaTeseladaFS.glsl
+	default_params
+	{
+		param_named texturaS int 0
+		param_named texturaM int 1
+		param_named texturaC int 2
+	}
+}
+
+vertex_program SpaceSkyVS glsl
+{ 
+	source SpaceSkyVS.glsl
+	default_params{
+		param_named_auto modelViewProjMat worldviewproj_matrix
+	}
+}
+
+fragment_program SpaceSkyFS glsl
+{ 
+	source SpaceSkyFS.glsl
+	default_params
+	{
+		param_named texturaL int 0
+		param_named texturaM int 1
+		param_named BF float 0.5
+		param_named intLuzAmb float 1.0
+	}
+}
+
+vertex_program SpaceZoomVS glsl
+{
+    source SpaceVS.glsl
+    default_params 
+    {
+        param_named_auto modelViewProjMat worldviewproj_matrix
+        param_named_auto sintime sintime_0_2pi 5
+    }
+}
+
+fragment_program SpaceZoomFS glsl
+{
+    source SpaceFS.glsl
+    default_params 
+    {  
+        param_named texturaL int 0
+        param_named texturaM int 1
+    }
+}
+
+material BombaTeselada {
+	technique {
+		pass {
+			vertex_program_ref BombaTeseladaVS 
+			{
+			}
+			fragment_program_ref BombaTeseladaFS 
+			{
+			}
+			texture_unit { 
+				texture spaceSky.jpg 2d // archivo
+				tex_address_mode wrap // sólo configuración
+			}
+			texture_unit { 
+				texture BumpyMetal.jpg 2d // archivo
+				tex_address_mode wrap // sólo configuración
+			}
+			texture_unit { 
+				texture checker.png
+				tex_address_mode wrap
+			}
+		} 
+	} 
+}
+
+material SpaceSky {
+technique {
+	pass {
+			vertex_program_ref SpaceSkyVS
+			{ 
+			}
+			fragment_program_ref SpaceSkyFS
+			{ 
+			}
+			texture_unit { 
+				texture lightMap.jpg 2d // archivo
+				tex_address_mode clamp // sólo configuración
+				filtering bilinear // de acceso al texel
+			}
+			texture_unit { 
+				texture spaceSky.jpg 2d // archivo
+				tex_address_mode wrap // sólo configuración
+			} // de acceso al texel
+		} 
+	} 
+}
+
+material SpaceZoom
+{
+    technique 
+    {
+        pass
+        {
+            vertex_program_ref SpaceZoomVS
+            { 
+            }
+            fragment_program_ref SpaceZoomFS
+            { 
+            }
+            texture_unit // unit 0
+            {
+                texture lightMap.jpg 2d
+            }
+            texture_unit // unit 1
+            {
+                texture spaceSky.jpg 2d
+            }
+        }
+    }
+}
